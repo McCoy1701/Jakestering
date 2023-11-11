@@ -1,4 +1,5 @@
 CC = gcc
+CINC = -Iinclude
 CFLAGS = -g
 
 BIN_DIR = bin
@@ -9,11 +10,14 @@ SRC_DIR = src
 
 all: $(BIN_DIR)
 
-$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
-	$(CC) $< -c -o $@
+$(OBJ_DIR)/jakestering.o: $(SRC_DIR)/jakestering.c
+	$(CC) $< -c $(CINC) -o $@
 
-$(BIN_DIR): always $(OBJ_DIR)/main.o
-	$(CC) $(OBJ_DIR)/main.o -o $@/bin
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
+	$(CC) $< -c $(CINC) -o $@
+
+$(BIN_DIR): always $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o
+	$(CC) $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o -o $@/bin
 
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
