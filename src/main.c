@@ -7,33 +7,26 @@
 int main( int argc, char **argv )
 {
   setupIO();
-  
-  for ( int i = 0; i < 4; i++ )
-  {
-    pinMode( i, INPUT );
-  }
-  
-  for ( int i = 0; i < 4; i++ )
-  {
-    pudController( i, PUD_PULL_UP );
-  }
 
-  for ( int i = 4; i <= 12; i++ )
+  for ( int i = 0; i <= 12; i++ )
   {
     pinMode( i, OUTPUT );
   }
-
-  for ( int i = 4; i <= 12; i++ )
+  
+  while ( 1 )
   {
-    digitalWrite( i, HIGH );
-    msDelay( 500 );
+    for ( int i = 0; i <= 12; i++ )
+    {
+      digitalWrite( i, HIGH );
+      msDelay( 100 );
 
-  }
+    }
 
-  for ( int i = 4; i <= 12; i++)
-  {
-    digitalWrite( i, LOW );
-    msDelay( 500 );
+    for ( int i = 12; i >= 0; i--)
+    {
+      digitalWrite( i, LOW );
+      msDelay( 100 );
+    }
   }
 
   return 0;

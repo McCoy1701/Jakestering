@@ -60,9 +60,9 @@ void pinMode( int pin, int mode )
 void pudController( int pin, int PUD )
 {
   GPIO_PULL = PUD;
-  sleep(0.015);
+  usleep( 5 );
   GPIO_PULLCLK0 = pin;
-  sleep(0.015);
+  usleep( 5 );
 
   GPIO_PULL = 0;
   GPIO_PULLCLK0 = 0;
