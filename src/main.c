@@ -23,16 +23,17 @@ int main( int argc, char **argv )
     pinMode( i, OUTPUT );
   }
 
-  for ( int i = 0; i <= 12; i++ )
+  for ( int i = 4; i <= 12; i++ )
   {
     digitalWrite( i, HIGH );
-    sleep( 1 );
+    msDelay( 500 );
+
   }
 
-  for ( int i = 0; i <= 12; i++)
+  for ( int i = 4; i <= 12; i++)
   {
     digitalWrite( i, LOW );
-    sleep( 1 );
+    msDelay( 500 );
   }
 
   return 0;

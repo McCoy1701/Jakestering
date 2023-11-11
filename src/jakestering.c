@@ -33,6 +33,16 @@ void setupIO()
   gpio = ( volatile unsigned* )gpioMap;
 }
 
+void delay( int seconds )
+{
+  sleep( seconds );
+}
+
+void msDelay( int milliseconds )
+{
+  usleep( ( milliseconds % 1000 ) * 1000 );
+}
+
 void pinMode( int pin, int mode )
 {
   if ( mode == INPUT )
