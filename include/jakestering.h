@@ -11,9 +11,9 @@ extern volatile unsigned *gpio; //Access to the input / output
 
 void setupIO(); //Setup function to create memory regions to access the GPIO
 
-void delay(int seconds);
+void delay(int milliSeconds);
 
-void msDelay(int milliSeconds);
+void delayMirco(int microSeconds);
 
 void pinMode( int pin, int mode );
 

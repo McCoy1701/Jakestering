@@ -33,14 +33,14 @@ void setupIO()
   gpio = ( volatile unsigned* )gpioMap;
 }
 
-void delay( int seconds )
+void delay( int milliSeconds )
 {
-  sleep( seconds );
+  usleep( ( milliSeconds % 1000 ) * 1000 );
 }
 
-void msDelay( int milliseconds )
+void delayMicro( int mircoSeconds )
 {
-  usleep( ( milliseconds % 1000 ) * 1000 );
+  usleep( mircoSeconds );
 }
 
 void pinMode( int pin, int mode )
@@ -59,13 +59,15 @@ void pinMode( int pin, int mode )
 
 void pudController( int pin, int PUD )
 {
-  GPIO_PULL = PUD;
+  GPIO_PULL = PUD & 3;
   usleep( 5 );
-  GPIO_PULLCLK0 = pin;
+  GPIO_PULLCLK0 = 1 << (pin & 31);
   usleep( 5 );
 
   GPIO_PULL = 0;
+  usleep( 5 );
   GPIO_PULLCLK0 = 0;
+  usleep( 5 );
 }
 
 void digitalWrite( int pin, int value )
@@ -83,9 +85,9 @@ void digitalWrite( int pin, int value )
 
 int digitalRead( int pin )
 {
-  if ( GET_GPIO( pin ) )
-    return 1;
+  if ( GET_GPIO( pin ))
+    return HIGH;
   else
-    return 0;
+    return LOW;
 }
 

@@ -26,8 +26,8 @@
 #define OUTPUT 1
 
 #define PUD_DISABLE   0
-#define PUD_PULL_DOWN 1
-#define PUD_PULL_UP   2
+#define PUD_DOWN      1
+#define PUD_UP        2
 
 #endif
 
