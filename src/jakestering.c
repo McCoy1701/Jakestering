@@ -59,15 +59,13 @@ void pinMode( int pin, int mode )
 
 void pudController( int pin, int PUD )
 {
-  GPIO_PULL = PUD & 3;
+  GPIO_PULL = PUD & 0b11;
   usleep( 5 );
-  GPIO_PULLCLK0 = 1 << (pin & 31);
+  GPIO_PULLCLK0 = 1 << pin;
   usleep( 5 );
 
   GPIO_PULL = 0;
-  usleep( 5 );
   GPIO_PULLCLK0 = 0;
-  usleep( 5 );
 }
 
 void digitalWrite( int pin, int value )

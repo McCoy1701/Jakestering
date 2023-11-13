@@ -19,8 +19,8 @@ $(OBJ_DIR)/jakestering.o: $(SRC_DIR)/jakestering.c
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
 	$(CC) $< -c $(CINC) -o $@
 
-$(BIN_DIR): always $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o 
-	$(CC) $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o -o $@/bin
+$(BIN_DIR): always $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o $(OBJ_DIR)/keypad.o
+	$(CC) $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o $(OBJ_DIR)/keypad.o -o $@/bin
 
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
