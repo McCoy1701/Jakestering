@@ -11,7 +11,39 @@ int main( int argc, char **argv )
 {
   setupIO();
 
-  keypad = initKeypad( 0, 1, 2, 3, 7, 6, 5, 4 );
+  for ( int i = 0; i < 8; i++ )
+  {
+    pinMode( i , OUTPUT );
+  }
+
+  digitalWriteByte( 0x80, 0, 7 );
+  sleep( 1 );
+  
+  digitalWriteByte( 0x40, 0, 7 );
+  sleep( 1 );
+  
+  digitalWriteByte( 0x20, 0, 7 );
+  sleep( 1 );
+  
+  digitalWriteByte( 0x10, 0, 7 );
+  sleep( 1 );
+  
+  digitalWriteByte( 0x08, 0, 7 );
+  sleep( 1 );
+  
+  digitalWriteByte( 0x04, 0, 7 );
+  sleep( 1 );
+  
+  digitalWriteByte( 0x02, 0, 7 );
+  sleep( 1 );
+  
+  digitalWriteByte( 0x01, 0, 7 );
+  sleep( 1 );
+
+  digitalWriteByte( 0x00, 0, 7 );
+  sleep( 1 );
+
+/*  keypad = initKeypad( 0, 1, 2, 3, 7, 6, 5, 4 );
   
   while ( 1 )
   {
@@ -20,7 +52,7 @@ int main( int argc, char **argv )
     {
       printf( "key: %c\n", key );
     }
-  }
+  }*/
 
   return 0;
 }

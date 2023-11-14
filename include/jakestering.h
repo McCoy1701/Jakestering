@@ -23,5 +23,7 @@ void digitalWrite( int pin, int value );
 
 int digitalRead( int pin );
 
+void digitalWriteByte( const int value, int pinStart, int pinEnd );
+
 #endif
 

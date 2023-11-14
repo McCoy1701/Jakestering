@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -87,5 +88,30 @@ int digitalRead( int pin )
     return HIGH;
   else
     return LOW;
+}
+
+void digitalWriteByte( const int value, int pinStart, int pinEnd )
+{
+  uint32_t pinSet = 0;
+  uint32_t pinClr = 0;
+  int mask = 1;
+  
+  for ( int i = pinEnd; i >= pinStart; i-- )
+  {
+    if ( ( value & mask ) == 0 )
+    {
+      pinClr |= ( 1 << i ); //set the pin to be cleared
+    }
+
+    else 
+    {
+      pinSet |= ( 1 << i ); //set the pin the be set
+    }
+
+    mask <<= 1;
+  }
+
+  GPIO_CLR = pinClr;
+  GPIO_SET = pinSet;
 }
 
