@@ -36,7 +36,15 @@ void setupIO()
 
 void delay( int milliSeconds )
 {
-  usleep( ( milliSeconds % 1000 ) * 1000 );
+  if ( ( milliSeconds % 1000 ) == 0 )
+  {
+    sleep(milliSeconds / 1000);
+  }
+  
+  else 
+  {
+    usleep( ( milliSeconds % 1000 ) * 1000 );
+  }
 }
 
 void delayMicro( int mircoSeconds )
@@ -90,13 +98,19 @@ int digitalRead( int pin )
     return LOW;
 }
 
-void digitalWriteByte( const int value, int pinStart, int pinEnd )
+void digitalWriteByte( const int value, int pinStart, int pinEnd ) //pin start must be less than pinEnd
 {
   uint32_t pinSet = 0;
   uint32_t pinClr = 0;
   int mask = 1;
   
-  for ( int i = pinEnd; i >= pinStart; i-- )
+  if ( ( pinEnd - pinStart ) != 7 )
+  {
+    printf( "Must be 8 pins 0-7: %d\n", ( pinEnd - pinStart ) );
+    return;
+  }
+
+  for ( int i = pinStart; i <= pinEnd; i++ )
   {
     if ( ( value & mask ) == 0 )
     {

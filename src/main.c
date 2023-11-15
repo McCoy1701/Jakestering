@@ -16,32 +16,31 @@ int main( int argc, char **argv )
     pinMode( i , OUTPUT );
   }
 
-  digitalWriteByte( 0x80, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b10101010, 0, 7 );
+  delay( 1000 );
   
-  digitalWriteByte( 0x40, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b11110000, 0, 7 );
+  delay( 1000 );
   
-  digitalWriteByte( 0x20, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b00001111, 0, 7 );
+  delay( 1000 );
   
-  digitalWriteByte( 0x10, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b01010101, 0, 7 );
+  delay( 1000 );
   
-  digitalWriteByte( 0x08, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b00111100, 0, 7 );
+  delay( 1000 );
   
-  digitalWriteByte( 0x04, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b11000011, 0, 7 );
+  delay( 1000 );
   
-  digitalWriteByte( 0x02, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b00011000, 0, 7 );
+  delay( 1000 );
   
-  digitalWriteByte( 0x01, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b01010101, 0, 7 );
+  delay( 1000 );
 
-  digitalWriteByte( 0x00, 4, 11 );
-  sleep( 1 );
+  digitalWriteByte( 0b00000000, 0, 7 );
 
 /*  keypad = initKeypad( 0, 1, 2, 3, 7, 6, 5, 4 );
   
