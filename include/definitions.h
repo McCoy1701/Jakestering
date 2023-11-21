@@ -1,5 +1,5 @@
-#ifndef __DEFINITIONS__
-#define __DEFINITIONS__
+#ifndef __DEFINITIONS_H__
+#define __DEFINITIONS_H__
 
 #define BCM2835_BASE 0x20000000
 #define GPIO_BASE ( BCM2835_BASE + 0x200000 )

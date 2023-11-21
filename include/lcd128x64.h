@@ -1,5 +1,5 @@
-#ifndef __LCD_128_X_64__
-#define __LCD_128_X_64__
+#ifndef __LCD_128_X_64_H__
+#define __LCD_128_X_64_H__
 
 typedef struct _lcd128x64
 {

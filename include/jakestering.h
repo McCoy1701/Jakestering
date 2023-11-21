@@ -1,5 +1,5 @@
-#ifndef __JAKESTERING__
-#define __JAKESTERING__
+#ifndef __JAKESTERING_H__
+#define __JAKESTERING_H__
 
 #include "definitions.h"
 
