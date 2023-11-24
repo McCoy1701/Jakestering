@@ -49,6 +49,23 @@ char keypadTablePage2[ 4 ][ 4 ] =
   '.', ' ', '&', '|',
 };
 
+/*
+ * Initialize a 4x4 keypad matrix
+ *
+ * Parameters:
+ *  c0: column 1
+ *  c1: column 2
+ *  c2: column 3
+ *  c3: column 4
+ *  r0: row 1
+ *  r1: row 2
+ *  r2: row 3
+ *  r3: row 4
+ *
+ * Return:
+ *  Keypad that has been initialized 
+ */
+
 Keypad initKeypad( int c0, int c1, int c2, int c3, int r0, int r1, int r2, int r3 )
 {
   Keypad kp;
@@ -77,6 +94,17 @@ Keypad initKeypad( int c0, int c1, int c2, int c3, int r0, int r1, int r2, int r
 
   return kp;
 }
+
+/*
+ * Check the keypad for any keys being pressed
+ *
+ * Parameters:
+ *  kp        : keypad that is being checked
+ *  pageNumber: what page of the keypad are you on
+ *
+ * Return:
+ *  char that has been pressed 
+ */
 
 char checkKeypad( Keypad kp, int pageNumber )
 {

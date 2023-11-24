@@ -25,64 +25,15 @@
 #include "jakestering.h"
 #include "lcd128x64.h"
 
-
-LCD128x64 initLcd( int RS, int RW, int E, int DB0, int DB7, int PSB, int RST )
-{
-  LCD128x64 lcd;
-
-  lcd.RS  =  RS;
-  lcd.RW  =  RW;
-  lcd.E   =   E;
-  lcd.PSB = PSB;
-  lcd.RST = RST;
-  
-  int count = 0;
-  
-  for ( int i = DB0; i <= DB7; i++ )
-  {
-    lcd.DB[count] = i;
-    count++;
-  }
-  
-  pinMode( lcd.RS , OUTPUT );
-  pinMode( lcd.RW , OUTPUT );
-  pinMode( lcd.E  , OUTPUT );
-  pinMode( lcd.PSB, OUTPUT );
-  pinMode( lcd.RST, OUTPUT );
-
-  for ( int i = 0; i < 8; i++ )
-  {
-    pinMode( lcd.DB[i], OUTPUT );
-  }
-
-  digitalWrite( lcd.RS , HIGH );
-  digitalWrite( lcd.RW , LOW  );
-  digitalWrite( lcd.E  , LOW  );
-  digitalWrite( lcd.PSB, HIGH );
-  digitalWrite( lcd.RST, LOW  );
-
-  for ( int i = 0; i < 8; i++ )
-  {
-    digitalWrite( lcd.DB[i], LOW );
-  }
-  
-  return lcd;
-}
-
-void lcdSetup( LCD128x64 lcd )
-{
-  
-}
-
-void lcdSendData( const int value )
-{
-
-}
-
-void lcdSendInstruction( const int value )
-{
-
-}
+/*
+ * Pulse the enable line 
+ *
+ * Parameters:
+ *  lcd: which lcd to enable
+ *
+ * Return:
+ *  void
+ */
 
 void pulseEnable( LCD128x64 lcd )
 {
@@ -90,5 +41,95 @@ void pulseEnable( LCD128x64 lcd )
   delayMicro( 1 );
   digitalWrite( lcd.E, LOW );
   delayMicro( 5 );
+}
+
+/*
+ * Send data to the lcd
+ *
+ * Parameters:
+ *  lcd : which lcd to receive the data
+ *  data: data to be sent
+ *
+ * Return:
+ *  void
+ */
+
+void lcdSendData( LCD128x64 lcd, const int data )
+{
+
+}
+
+/*
+ * Send instruction to the lcd
+ *
+ * Parameters:
+ *  lcd        : which lcd to receive the instruction
+ *  instruction: instruction to be sent 
+ *
+ * Return:
+ *  void
+ */
+
+void lcdSendInstruction( LCD128x64 lcd, const int instruction )
+{
+
+}
+
+/*
+ * Initialize the lcd
+ *
+ * Parameters:
+ *  RS   : register select
+ *  RW   : read/write
+ *  E    : enable
+ *  DB0-7: data lines
+ *  PSB  : interface selection 1 for 8-bit parallel
+ *  RST  : reset
+ *
+ * Return:
+ *  LCD128x64 that has been initialized
+ */
+
+LCD128x64 initLcd( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int PSB, int RST )
+{
+  LCD128x64 lcd;
+
+  lcd.RS  =  RS;
+  lcd.RW  =  RW;
+  lcd.E   =   E;
+  lcd.DB0 = DB0;
+  lcd.DB1 = DB1;
+  lcd.DB2 = DB2;
+  lcd.DB3 = DB3;
+  lcd.DB4 = DB4;
+  lcd.DB5 = DB5;
+  lcd.DB6 = DB6;
+  lcd.DB7 = DB7;
+  lcd.PSB = PSB;
+  lcd.RST = RST;
+
+  pinMode( lcd.RS , OUTPUT );
+  pinMode( lcd.RW , OUTPUT );
+  pinMode( lcd.E  , OUTPUT );
+  pinMode( lcd.DB0, OUTPUT );
+  pinMode( lcd.DB1, OUTPUT );
+  pinMode( lcd.DB2, OUTPUT );
+  pinMode( lcd.DB3, OUTPUT );
+  pinMode( lcd.DB4, OUTPUT );
+  pinMode( lcd.DB5, OUTPUT );
+  pinMode( lcd.DB6, OUTPUT );
+  pinMode( lcd.DB7, OUTPUT );
+  pinMode( lcd.PSB, OUTPUT );
+  pinMode( lcd.RST, OUTPUT );
+
+  digitalWrite( lcd.RS , HIGH );
+  digitalWrite( lcd.RW , LOW  );
+  digitalWrite( lcd.E  , LOW  );
+  digitalWrite( lcd.PSB, HIGH );
+  digitalWrite( lcd.RST, LOW  );
+
+  
+
+  return lcd;
 }
 

@@ -37,7 +37,18 @@ void* gpioMap;
 
 volatile unsigned *gpio;
 
-void setupIO()
+/*
+ * Sets up the GPIO memory address space to be modified
+ *
+ * Parameters:
+ *  void
+ * 
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void setupIO( void )
 {
   if ( ( memFd = open ( "/dev/mem", O_RDWR|O_SYNC ) ) < 0)
   {
@@ -58,6 +69,17 @@ void setupIO()
   gpio = ( volatile unsigned* )gpioMap;
 }
 
+/*
+ * Delay in milli seconds, but if milliSecond is higer than 1000 delay in seconds
+ *
+ * Parameters:
+ *  milliSeconds: amount of time to delay
+ * 
+ * Return:
+ *  void
+ **************************************************************
+ */
+
 void delay( int milliSeconds )
 {
   if ( ( milliSeconds % 1000 ) == 0 )
@@ -71,10 +93,33 @@ void delay( int milliSeconds )
   }
 }
 
+/*
+ * Delay in micro seconds
+ *
+ * Parameters:
+ *  microSeconds: amount of time to delay
+ * 
+ * Return:
+ *  void
+ **************************************************************
+ */
+
 void delayMicro( int microSeconds )
 {
   usleep( microSeconds );
 }
+
+/*
+ * Pin mode sets the INPUT/OUTPUT state of a pin 
+ *
+ * Parameters:
+ *  pin : GPIO pin to set
+ *  mode: INPUT/OUTPUT 0/1
+ * 
+ * Return:
+ *  void
+ **************************************************************
+ */
 
 void pinMode( int pin, int mode )
 {
@@ -90,6 +135,18 @@ void pinMode( int pin, int mode )
   }
 }
 
+/*
+ * Pull up/down controller for the built in resistors on each GPIO pin
+ *
+ * Parameters:
+ *  pin: GPIO pin to set
+ *  PUD: DISABLE/PULL_DOWN/PULL_UP 0/1/2
+ * 
+ * Return:
+ *  void
+ **************************************************************
+ */
+
 void pudController( int pin, int PUD )
 {
   GPIO_PULL = PUD & 0b11;
@@ -100,6 +157,18 @@ void pudController( int pin, int PUD )
   GPIO_PULL = 0;
   GPIO_PULLCLK0 = 0;
 }
+
+/*
+ * write a value to a given pin
+ *
+ * Parameters:
+ *  pin  : GPIO pin to set
+ *  value: LOW/HIGH 0/1 
+ * 
+ * Return:
+ *  void
+ **************************************************************
+ */
 
 void digitalWrite( int pin, int value )
 {
@@ -114,6 +183,17 @@ void digitalWrite( int pin, int value )
   }
 }
 
+/*
+ * read the value of a given pin
+ *
+ * Parameters:
+ *  pin: GPIO pin to set
+ * 
+ * Return:
+ *  value of the pin read (HIGH/LOW 1/0)
+ **************************************************************
+ */
+
 int digitalRead( int pin )
 {
   if ( GET_GPIO( pin ))
@@ -121,6 +201,19 @@ int digitalRead( int pin )
   else
     return LOW;
 }
+
+/*
+ * Write a byte to a given range of 8 pins
+ *
+ * Parameters:
+ *  value   : data to be writen
+ *  pinStart: start of pin range
+ *  pinEnd  : end of pin range
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
 
 void digitalWriteByte( const int value, int pinStart, int pinEnd ) //pin start must be less than pinEnd
 {
