@@ -15,7 +15,7 @@ int main( int argc, char **argv )
   
   sendInstruction( lcd, 0b00000001 );
 
-  lcdPrintf(lcd, "Fat Fucking Bitch!");
+  lcdPrintf(lcd, "holy shit, %d, %d", 10, 11);
 
   return 0;
 }

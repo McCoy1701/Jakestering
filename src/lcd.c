@@ -1,3 +1,6 @@
+#include <stdarg.h>
+#include <stdio.h>
+
 #include "lcd.h"
 #include "jakestering.h"
 
@@ -68,16 +71,28 @@ void setupLcd( LCD lcd )
   sendInstruction( lcd, 0b00000110 ); //Set entry mode, increment address
 }
 
-void lcdPutChar( LCD lcd, char character )
+void lcdPutChar( LCD lcd, unsigned char character )
 {
   sendData( lcd, character );
 }
 
-void lcdPrintf( LCD lcd, char *string, ... )
+void lcdPuts( LCD lcd, const char* string )
 {
   while( *string )
   {
     lcdPutChar( lcd, *string++ );
   }
+}
+
+void lcdPrintf( LCD lcd, const char *string, ... )
+{
+  char buffer[ 1024 ];
+  va_list args;
+
+  va_start( args, string );
+    vsnprintf( buffer, sizeof( buffer ), string, args );
+  va_end( args );
+  
+  lcdPuts( lcd, buffer );
 }
 
