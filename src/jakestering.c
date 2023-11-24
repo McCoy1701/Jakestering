@@ -47,9 +47,9 @@ void delay( int milliSeconds )
   }
 }
 
-void delayMicro( int mircoSeconds )
+void delayMicro( int microSeconds )
 {
-  usleep( mircoSeconds );
+  usleep( microSeconds );
 }
 
 void pinMode( int pin, int mode )

@@ -16,7 +16,9 @@ typedef struct _lcd
   int DB7;
 } LCD;
 
-void initLcd( LCD lcd );
+LCD initLcd( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7 );
+
+void setupLcd( LCD lcd );
 
 void pulseEnable( LCD lcd );
 

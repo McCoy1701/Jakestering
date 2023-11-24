@@ -13,7 +13,7 @@ void setupIO(); //Setup function to create memory regions to access the GPIO
 
 void delay(int milliSeconds);
 
-void delayMirco(int microSeconds);
+void delayMicro(int microSeconds);
 
 void pinMode( int pin, int mode );
 

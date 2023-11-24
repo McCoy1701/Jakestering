@@ -3,67 +3,19 @@
 #include <unistd.h>
 
 #include "jakestering.h"
-#include "keypad.h"
+#include "lcd.h"
 
-Keypad keypad;
+LCD lcd;
 
 int main( int argc, char **argv )
 {
   setupIO();
 
-  for ( int i = 0; i < 13; i++ )
-  {
-    pinMode( i , OUTPUT );
-  }
+  lcd = initLcd( 0, 1, 2,  3, 4, 5, 6, 7, 8, 9, 10 );
+  
+  sendInstruction( lcd, 0b00000001 );
 
-  digitalWrite( 0, HIGH );
-  digitalWrite( 1, HIGH );
-  digitalWrite( 2, HIGH );
-  digitalWrite( 3, HIGH );
-
-  delay( 1000 );
-  
-  digitalWrite( 0, LOW );
-  digitalWrite( 1, LOW );
-  digitalWrite( 2, LOW );
-  digitalWrite( 3, LOW );
-
-/*  digitalWriteByte( 0b10101010, 0, 7 );
-  delay( 1000 );
-  
-  digitalWriteByte( 0b11110000, 0, 7 );
-  delay( 1000 );
-  
-  digitalWriteByte( 0b00001111, 0, 7 );
-  delay( 1000 );
-  
-  digitalWriteByte( 0b01010101, 0, 7 );
-  delay( 1000 );
-  
-  digitalWriteByte( 0b00111100, 0, 7 );
-  delay( 1000 );
-  
-  digitalWriteByte( 0b11000011, 0, 7 );
-  delay( 1000 );
-  
-  digitalWriteByte( 0b00011000, 0, 7 );
-  delay( 1000 );
-  
-  digitalWriteByte( 0b01010101, 0, 7 );
-  delay( 1000 );
-
-  digitalWriteByte( 0b00000000, 0, 7 ); */
-
-/*  keypad = initKeypad( 0, 1, 2, 3, 7, 6, 5, 4 );
-  
-  while ( 1 )
-  {
-    char key = checkKeypad( keypad, 0 );
-    if ( key != '\0' )
-    {
-      printf( "key: %c\n", key );
-    }
-  }*/
+  lcdPrintf(lcd, "Fat Fucking Bitch!");
 
   return 0;
 }
