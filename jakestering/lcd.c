@@ -133,7 +133,7 @@ LCD initLcd( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4,
   digitalWrite( lcd.E , LOW  );
 
   sendInstruction( lcd, 0b00111000 ); //Set 8-bit operation, 2-line mode, 5x8 character font
-  sendInstruction( lcd, 0b00001110 ); //Set display on, cursor on, cursor blinking on
+  sendInstruction( lcd, 0b00001111 ); //Set display on, cursor on, cursor blinking off
   sendInstruction( lcd, 0b00000110 ); //Set entry mode, increment address
 
   return lcd;

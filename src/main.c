@@ -13,10 +13,24 @@ int main( int argc, char **argv )
 
   lcd = initLcd( 0, 1, 2,  3, 4, 5, 6, 7, 8, 9, 10 );
   
-  sendInstruction( lcd, 0b00000001 );
+  sendInstruction( lcd, 0b00000001 ); //clear screen
 
-  lcdPrintf(lcd, "holy shit, %d, %d", 10, 11);
+  sendInstruction( lcd, 0b10000000 ); //DDRAM last spot
 
+  lcdPutChar( lcd, 'h' );
+
+  sendInstruction( lcd, 0b11000000 ); //DDRAM last spot
+
+  lcdPutChar( lcd, 'e' );
+  
+  sendInstruction( lcd, 0b10010100 ); //DDRAM last spot
+
+  lcdPutChar( lcd, 'l' );
+  
+  sendInstruction( lcd, 0b11010100 ); //DDRAM last spot
+
+  lcdPutChar( lcd, 'o' );
+  
   return 0;
 }
 
