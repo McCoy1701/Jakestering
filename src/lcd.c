@@ -1,6 +1,6 @@
 /*
  * lcd.c:
- *  Interface for HD44780 lcd driver
+ *  Routines for interfacing with HD44780 lcd driver
  *
  * Copyright (c) 2023 Jacob Kellum
  *************************************************************************
