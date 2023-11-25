@@ -25,14 +25,54 @@
 #ifndef __LCD_H__
 #define __LCD_H__
 
-#define LCD_CLEAR        0b00000001
-#define LCD_HOME         0b00000010
-#define LCD_ENTRY        0b00000100
-#define LCD_CONTROL      0b00001000
-#define LCD_CURSOR_SHIFT 0b00010000
-#define LCD_FUNCTION     0b00100000
-#define LCD_CGRAM        0b01000000
-#define LCD_DDRAM        0b10000000
+#define LCD_CLEAR        0b00000001  //Clear display
+#define LCD_HOME         0b00000010  //Return home
+#define LCD_ENTRY        0b00000100  //Set entry mode
+#define LCD_CONTROL      0b00001000  //Display on/off control
+#define LCD_CURSOR_SHIFT 0b00010000  //Cursor display shift
+#define LCD_FUNCTION     0b00100000  //Function set
+#define LCD_CGRAM        0b01000000  //Character generator ram
+#define LCD_DDRAM        0b10000000  //Display data ram
+
+/*
+ * Entry mode parameters
+ *  I/D: Increment or Decrement address registers
+ *  S  : Accompanies display shift
+ */
+
+#define ID_ENTRY         0b00000010
+#define S_ENTRY          0b00000001
+
+/*
+ * Display on/off control
+ *  D: Display on/off
+ *  C: Cursor on/off
+ *  B: Cursor blinking on/off
+ */
+
+#define D_CONTROL        0b00000100
+#define C_CONTROL        0b00000010
+#define B_CONTROL        0b00000001
+
+/*
+ * Cursor or display shift
+ *  S/C: Screen or cursor
+ *  R/L: Right or left
+ */
+
+#define LCD_SC_SHIFT     0b00001000
+#define LCD_RL_SHIFT     0b00000100
+
+/*
+ * Function set
+ *  DL: Data length 1 = 8-bits | 0 = 4-bits
+ *  N : Number of lines 1 = 2 lines | 0 = 1 line
+ *  F : Font 1 = 5x10 font | 0 = 5x8 font
+ */
+
+#define DL_FUNC          0b00010000
+#define N_FUNC           0b00001000
+#define F_FUNC           0b00000100
 
 typedef struct _lcd
 {
@@ -47,23 +87,27 @@ typedef struct _lcd
   int DB5;
   int DB6;
   int DB7;
+  int cx;
+  int cy;
+  int rows;
+  int cols;
 } LCD;
 
-LCD initLcd( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7 );
+LCD* initLcd( int rows, int cols, int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7 );
 
-void setupLcd( LCD lcd );
+void pulseEnable( LCD *lcd );
 
-void pulseEnable( LCD lcd );
+void sendData( LCD *lcd, const int data );
 
-void sendData( LCD lcd, const int data );
+void sendInstruction( LCD *lcd, const int instruction );
 
-void sendInstruction( LCD lcd, const int instruction );
+void lcdPutChar( LCD *lcd, unsigned char character );
 
-void lcdPutChar( LCD lcd, unsigned char character );
+void lcdPuts( LCD *lcd, const char* string );
 
-void lcdPuts( LCD lcd, const char* string );
+void lcdPrintf( LCD *lcd, const char *string, ... );
 
-void lcdPrintf( LCD lcd, const char *string, ... );
+void lcdPosition( LCD *lcd, int x, int y );
 
 #endif
 

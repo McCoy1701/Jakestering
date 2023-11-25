@@ -1,36 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "jakestering.h"
 #include "lcd.h"
 
-LCD lcd;
+typedef struct _ball
+{
+  int x, y;
+  int velx, vely;
+  int speed;
+} Ball;
+
+Ball* ballInit( int x, int y, int speed );
+
+LCD *lcd;
+
+Ball *ball;
 
 int main( int argc, char **argv )
 {
   setupIO();
 
-  lcd = initLcd( 0, 1, 2,  3, 4, 5, 6, 7, 8, 9, 10 );
+  lcd = initLcd( 4, 20, 0, 1, 2,  3, 4, 5, 6, 7, 8, 9, 10 );
   
-  sendInstruction( lcd, 0b00000001 ); //clear screen
+  ball = ballInit( 0, 0, 1);
 
-  sendInstruction( lcd, 0b10000000 ); //DDRAM last spot
+  sendInstruction( lcd, LCD_CLEAR );
 
-  lcdPutChar( lcd, 'h' );
+  while (1)
+  {
+    ball->x += ball->velx;
+    ball->y += ball->vely;
 
-  sendInstruction( lcd, 0b11000000 ); //DDRAM last spot
+    if ( ( ball->x >= lcd->cols ) || ( ball->x <= 0 ) )
+    {
+      ball->velx = -ball->velx;
+    }
+    
+    if ( ( ball->y >= lcd->rows ) || ( ball->y <= 0 ) )
+    {
+      ball->vely = -ball->vely;
+    }
 
-  lcdPutChar( lcd, 'e' );
-  
-  sendInstruction( lcd, 0b10010100 ); //DDRAM last spot
+    lcdPosition( lcd, ball->x, ball->y );
+    lcdPutChar( lcd, 'o' );
+    delay( 100 );
+    lcdPosition( lcd, ball->x, ball->y );
+    lcdPutChar( lcd, ' ' );
 
-  lcdPutChar( lcd, 'l' );
-  
-  sendInstruction( lcd, 0b11010100 ); //DDRAM last spot
+  }
 
-  lcdPutChar( lcd, 'o' );
-  
+  free( lcd );
+  free( ball );
+
   return 0;
+}
+
+Ball* ballInit( int x, int y, int speed )
+{
+  Ball *ball = ( Ball* )malloc( sizeof( Ball ) );
+  
+  ball->x = x;
+  ball->y = y;
+  ball->speed = speed;
+  ball->velx = speed;
+  ball->vely = speed;
+
+  return ball;
 }
 
