@@ -109,5 +109,13 @@ void lcdPrintf( LCD *lcd, const char *string, ... );
 
 void lcdPosition( LCD *lcd, int x, int y );
 
+void lcdClear( LCD *lcd );
+
+void lcdDisplay( LCD *lcd, int value );
+
+void lcdCursor( LCD *lcd, int value );
+
+void lcdCursorBlink( LCD *lcd, int value );
+
 #endif
 

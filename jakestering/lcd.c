@@ -192,6 +192,106 @@ void lcdPrintf( LCD *lcd, const char *string, ... )
   lcdPuts( lcd, buffer );
 }
 
+/*
+ * Clears the lcd
+ *
+ * Parameters:
+ *  lcd: screen to clear
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcdClear( LCD *lcd )
+{
+  sendInstruction( lcd, LCD_CLEAR );
+  sendInstruction( lcd, LCD_HOME );
+  lcd->cx = 0;
+  lcd->cy = 0;
+  delay(10);
+}
+
+/*
+ * Set the display on/off 
+ *
+ * Parameters:
+ *  lcd  : screen
+ *  value: 1 = on | 0 = off
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcdDisplay( LCD *lcd, int value )
+{
+  if ( value )
+  {
+    sendInstruction( lcd, LCD_CONTROL | D_CONTROL );
+    return;
+  }
+
+  else
+  {
+    sendInstruction( lcd, LCD_CONTROL );
+    return;
+  }
+}
+
+/*
+ * Turn off/on cursor
+ *
+ * Parameters:
+ *  lcd  : screen to set cursor
+ *  value: 1 = set cursor on | 0 = set cursor off
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcdCursor( LCD *lcd, int value )
+{
+  if ( value )
+  {
+    sendInstruction( lcd, LCD_CONTROL | D_CONTROL | C_CONTROL );
+    return;
+  }
+
+  else
+  {
+    sendInstruction( lcd, LCD_CONTROL | D_CONTROL );
+    return;
+  }
+}
+
+/*
+ * Set the cursor to blink
+ *
+ * Parameters:
+ *  lcd  : screen with cursor to blink
+ *  value: 1 = on | 0 = off
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcdCursorBlink( LCD *lcd, int value )
+{
+  if ( value )
+  {
+    sendInstruction( lcd, LCD_CONTROL | D_CONTROL | C_CONTROL | B_CONTROL );
+    return;
+  }
+
+  else
+  {
+    sendInstruction( lcd, LCD_CONTROL | D_CONTROL | C_CONTROL );
+    return;
+  }
+}
 
 /* 
  * Initialize the lcd
@@ -246,7 +346,7 @@ LCD* initLcd( int rows, int cols, int RS, int RW, int E, int DB0, int DB1, int D
   digitalWrite( lcd->E , LOW  );
 
   sendInstruction( lcd, 0b00111000 ); //Set 8-bit operation, 2-line mode, 5x8 character font
-  sendInstruction( lcd, 0b00001110 ); //Set display on, cursor on, cursor blinking off
+  sendInstruction( lcd, 0b00001100 ); //Set display on, cursor on, cursor blinking off
   sendInstruction( lcd, 0b00000110 ); //Set entry mode, increment address
 
   return lcd;
