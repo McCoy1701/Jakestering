@@ -2,7 +2,7 @@
  * keypad.h:
  *  Routines for interfacing with a 4x4 keypad
  *
- * Copyright (c) 2023 Jacob Kellum
+ * Copyright (c) 2023 Jacob Kellum <jkellum819@gmail.com>
  *************************************************************************
  * This file is apart of Jakestering:
  *    https://github.com/McCoy1701/Jakestering

@@ -2,7 +2,7 @@
  * jakestering.c:
  *  GPIO access library for raspberry pi zero v1.3
  *
- * Copyright (c) 2023 Jacob Kellum
+ * Copyright (c) 2023 Jacob Kellum <jkellum819@gmail.com>
  *************************************************************************
  * This file is apart of Jakestering:
  *    https://github.com/McCoy1701/Jakestering

@@ -2,7 +2,7 @@
  * lcd128x64.c:
  *  Routines for interfacing with ST7920 lcd driver
  *
- * Copyright (c) 2023 Jacob Kellum
+ * Copyright (c) 2023 Jacob Kellum <jkellum819@gmail.com>
  *************************************************************************
  * This file is apart of Jakestering:
  *    https://github.com/McCoy1701/Jakestering
