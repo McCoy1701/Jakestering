@@ -209,7 +209,7 @@ void lcdClear( LCD *lcd )
   sendInstruction( lcd, LCD_HOME );
   lcd->cx = 0;
   lcd->cy = 0;
-  delay(10);
+  delay( 5 );
 }
 
 /*
