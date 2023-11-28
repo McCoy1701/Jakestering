@@ -26,8 +26,8 @@ $(OBJ_DIR)/jakestering.o: $(JAKESTERING_DIR)/jakestering.c
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.c
 	$(CC) $< -c $(CINC) -o $@
 
-$(BIN_DIR): always $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o $(OBJ_DIR)/keypad.o $(OBJ_DIR)/lcd.o
-	$(CC) $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o $(OBJ_DIR)/keypad.o $(OBJ_DIR)/lcd.o $(CFLAGS) -o $@/bin
+$(BIN_DIR): always $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o $(OBJ_DIR)/lcd128x64.o
+	$(CC) $(OBJ_DIR)/main.o $(OBJ_DIR)/jakestering.o $(OBJ_DIR)/lcd128x64.o $(CFLAGS) -o $@/bin
 
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)

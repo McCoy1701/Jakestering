@@ -25,6 +25,8 @@
 #ifndef __LCD_128_X_64_H__
 #define __LCD_128_X_64_H__
 
+#include <stdint.h>
+
 //Instruction set 1: Basic
 #define LCD128_DISPLAY_CLEAR     0b00000001
 #define LCD128_RETURN_HOME       0b00000010
@@ -58,6 +60,18 @@
 
 #define LCD128_G_FUNCTION        0b00000010 //Graphics on/off
 
+#define LCD128_WIDTH  128
+#define LCD128_HEIGHT  64
+
+#define LCD128_PIXELS LCD128_WIDTH * LCD128_HEIGHT
+#define LCD128_BYTES_PER_WIDTH LCD128_WIDTH / 8
+#define LCD128_PIXEL_BYTES LCD128_BYTES_PER_WIDTH * LCD128_HEIGHT
+
+typedef struct _buffer
+{
+  uint8_t frameBuffer[ LCD128_PIXEL_BYTES ];
+} Buffer;
+
 typedef struct _lcd128
 {
   int RS;  // register select
@@ -77,34 +91,26 @@ typedef struct _lcd128
   int cx;
   int cy;
 
-  int rows;
-  int cols;
-
-  unsigned int screen[128][64];
+  Buffer* newBuffer;
+  Buffer* current;
 
 } LCD128;
 
-LCD128* initLcd( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int PSB, int RST );
+LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int PSB, int RST );
 
-void pulseEnable( LCD128 *lcd );
+static void pulseEnable128( LCD128 *lcd );
 
-void sendData( LCD128 *lcd, const int data );
+static void sendData128( LCD128 *lcd, const int data );
 
-void sendInstruction( LCD128 *lcd, const int instruction );
+static void sendInstruction128( LCD128 *lcd, const int instruction );
 
 void setTextMode( LCD128 *lcd );
 
 void setGraphicsMode( LCD128 *lcd );
 
-void lcdClear(LCD128 *lcd );
-
-void lcdReturnHome( LCD128 *lcd );
-
-void lcdTextPosition( LCD128 *lcd, int x, int y );
-
 void lcdGraphicsPosition( LCD128 *lcd, int x, int y );
 
-void lcdUpdateScreen( LCD128 *lcd, unsigned int buffer[128][64] );
+void lcdUpdateScreen( LCD128 *lcd );
 
 #endif
 
