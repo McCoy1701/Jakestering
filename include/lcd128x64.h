@@ -91,6 +91,9 @@ typedef struct _lcd128
   int cx;
   int cy;
 
+  int cols;
+  int rows;
+
   Buffer* newBuffer;
   Buffer* current;
 
@@ -100,9 +103,9 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
 
 static void pulseEnable128( LCD128 *lcd );
 
-static void sendData128( LCD128 *lcd, const int data );
+void sendData128( LCD128 *lcd, const int data );
 
-static void sendInstruction128( LCD128 *lcd, const int instruction );
+void sendInstruction128( LCD128 *lcd, const int instruction );
 
 void setTextMode( LCD128 *lcd );
 
@@ -111,6 +114,16 @@ void setGraphicsMode( LCD128 *lcd );
 void lcdGraphicsPosition( LCD128 *lcd, int x, int y );
 
 void lcdUpdateScreen( LCD128 *lcd );
+
+void lcd128Clear( LCD128 *lcd );
+
+void lcd128CursorPosition( LCD128 *lcd, int x, int y );
+
+void lcd128PutChar( LCD128 *lcd, unsigned char character );
+
+void lcd128Puts( LCD128 *lcd, const char* string );
+
+void lcd128Printf( LCD128 *lcd, const char *string, ... );
 
 #endif
 

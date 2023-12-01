@@ -29,6 +29,8 @@
 #include "jakestering.h"
 #include "lcd128x64.h"
 
+static const int rowsOffset[4] = { 0b10000000, 0b10010000, 0b10001000, 0b10011000 }; //0x80, 0x90, 0x88, 0x98
+
 /*
  * Pulse the enable line 
  *
@@ -63,7 +65,7 @@ void pulseEnable128( LCD128 *lcd )
 void sendData128( LCD128 *lcd, const int data )
 {
   digitalWriteByte( data, lcd->DB0, lcd->DB7 );
-  pulseEnable( lcd );
+  pulseEnable128( lcd );
   delay( 2 );
 }
 
@@ -82,7 +84,7 @@ void sendData128( LCD128 *lcd, const int data )
 void sendInstruction128( LCD128 *lcd, const int instruction )
 {
   digitalWrite( lcd->RS, LOW  );
-  sendData( lcd, instruction );
+  sendData128( lcd, instruction );
   digitalWrite( lcd->RS, HIGH );
 }
 
@@ -99,8 +101,9 @@ void sendInstruction128( LCD128 *lcd, const int instruction )
 
 void setTextMode( LCD128 *lcd )
 {
-  sendInstruction( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION );
-  lcdClear( lcd );
+  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION );
+  sendInstruction128( lcd, LCD128_DISPLAY_CLEAR );
+  delay( 2 );
 }
 
 /*
@@ -116,8 +119,131 @@ void setTextMode( LCD128 *lcd )
 
 void setGraphicsMode( LCD128 *lcd )
 {
-  sendInstruction( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION );
-  sendInstruction( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION | LCD128_G_FUNCTION );
+  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION );
+  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION | LCD128_G_FUNCTION );
+  delay( 5 );
+}
+
+/*
+ * Move the cursor
+ *
+ * Parameters:
+ *  x: move horizontally this amount
+ *  y: move vertically this amount
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128CursorPosition( LCD128 *lcd, int x, int y )
+{
+  if ( ( x > lcd->cols ) || ( x < 0 ) )
+  {
+    return;
+  }
+
+  if ( ( y > lcd->rows ) || ( y < 0 ) )
+  {
+    return;
+  }
+
+  sendInstruction128( lcd, x + ( LCD128_DDRAM_SET | rowsOffset[y] ) );
+
+  lcd->cx = x;
+  lcd->cy = y;
+}
+
+/* 
+ * Print a char to the lcd
+ *
+ * Parameters:
+ *  lcd      : lcd to print to  
+ *  character: char
+ *  
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128PutChar( LCD128 *lcd, unsigned char character )
+{
+  sendData128( lcd, character );
+  
+  if ( ++lcd->cx == lcd->cols )
+  {
+    lcd->cx = 0;
+    
+    if ( ++lcd->cy == lcd->rows )
+    {
+      lcd->cy = 0;
+    }
+
+    lcd128CursorPosition( lcd, lcd->cx, lcd->cy );
+  }
+}
+
+/* 
+ * Print a string to the lcd
+ *
+ * Parameters:
+ *  lcd   : lcd to print to  
+ *  string: string
+ *  
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128Puts( LCD128 *lcd, const char* string )
+{
+  while ( *string )
+  {
+    lcd128PutChar( lcd, *string++ );
+  }
+}
+
+/* 
+ * Print a formated string to the lcd
+ *
+ * Parameters:
+ *  lcd   : lcd to print to  
+ *  string: formated string
+ *  
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128Printf( LCD128 *lcd, const char *string, ... )
+{
+  char buffer[ 1024 ];
+  va_list args;
+
+  va_start( args, string );
+  vsnprintf( buffer, sizeof( buffer ), string, args );
+  va_end( args );
+
+  lcd128Puts( lcd, buffer );
+}
+
+/*
+ * Clears the lcd
+ *
+ * Parameters:
+ *  lcd: screen to clear
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128Clear( LCD128 *lcd )
+{
+  sendInstruction128( lcd, 0x01 );
+  sendInstruction128( lcd, 0x02 );
+  lcd->cx = 0;
+  lcd->cy = 0;
   delay( 5 );
 }
 
@@ -189,6 +315,9 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   lcd->DB7 = DB7;
   lcd->PSB = PSB;
   lcd->RST = RST;
+  
+  lcd->cols = 16;
+  lcd->rows = 4;
 
   lcd->cx = 0;
   lcd->cy = 0;
@@ -214,27 +343,20 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   digitalWrite( lcd->RW , LOW  );
   digitalWrite( lcd->E  , LOW  );
   digitalWrite( lcd->PSB, HIGH );
-  digitalWrite( lcd->RST, LOW  );
+  digitalWrite( lcd->RST, HIGH  );
 
-  delay( 10 );
-  digitalWrite( lcd->RST, HIGH );
   delay( 10 );
   digitalWrite( lcd->RST, LOW );
-  delay( 50 );
-
-  sendInstruction( lcd, 0b00110000 );
-  sendInstruction( lcd, 0b00110000 );
-  sendInstruction( lcd, 0b00001100 );
-  sendInstruction( lcd, 0b00110000 );
-  sendInstruction( lcd, 0b00110100 );
-  sendInstruction( lcd, 0b00110110 );
   delay( 10 );
+  digitalWrite( lcd->RST, HIGH );
+  delay( 50 );
+  
+  sendInstruction128( lcd, 0x30 );
+  sendInstruction128( lcd, 0x0E );
+  sendInstruction128( lcd, 0x06 );
+  sendInstruction128( lcd, 0x01 );
 
-  sendInstruction( lcd, 0b10000000 );
-  sendInstruction( lcd, 0b10000000 );
-
-  sendData( lcd, 0b11111111 );
-  sendData( lcd, 0b11111111 );
+  delay( 2 );
 
   return lcd;
 }
