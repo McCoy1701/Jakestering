@@ -31,8 +31,6 @@
 
 static const int rowsOffset[4] = { 0x80, 0x90, 0x88, 0x98 };
 
-uint8_t current[ LCD128_PIXELS ] = { 0 };
-
 /*
  * Pulse the enable line 
  *
@@ -66,9 +64,9 @@ void pulseEnable128( LCD128 *lcd )
 
 void sendData128( LCD128 *lcd, const int data )
 {
+  delayMicro( 72 );
   digitalWriteByte( data, lcd->DB0, lcd->DB7 );
   pulseEnable128( lcd );
-  delay( 2 );
 }
 
 /*
@@ -444,7 +442,7 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   digitalWrite( lcd->PSB, HIGH );
   digitalWrite( lcd->RST, HIGH  );
 
-  delay( 10 );
+  delay( 10 );                      //Reset lcd active low
   digitalWrite( lcd->RST, LOW );
   delay( 10 );
   digitalWrite( lcd->RST, HIGH );

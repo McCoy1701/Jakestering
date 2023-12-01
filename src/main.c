@@ -15,8 +15,6 @@ int main( int argc, char **argv )
   setGraphicsMode( lcd );
 
   lcd128ClearGraphics( lcd );
-  
-  delay( 1000 );
 
   for ( int x = 0; x < 128; x++ )
   {
