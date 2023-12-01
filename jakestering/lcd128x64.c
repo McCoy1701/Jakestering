@@ -29,7 +29,9 @@
 #include "jakestering.h"
 #include "lcd128x64.h"
 
-static const int rowsOffset[4] = { 0b10000000, 0b10010000, 0b10001000, 0b10011000 }; //0x80, 0x90, 0x88, 0x98
+static const int rowsOffset[4] = { 0x80, 0x90, 0x88, 0x98 };
+
+uint8_t current[ LCD128_PIXELS ] = { 0 };
 
 /*
  * Pulse the enable line 
@@ -103,24 +105,29 @@ void setTextMode( LCD128 *lcd )
 {
   sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION );
   sendInstruction128( lcd, LCD128_DISPLAY_CLEAR );
-  delay( 2 );
+  sendInstruction128( lcd, LCD128_RETURN_HOME );
+  delay( 5 );
 }
 
 /*
- * Set lcd to graphics mode
+ * Clears the lcd
  *
  * Parameters:
- *  lcd: to set graphics mode
+ *  lcd: screen to clear
  *
  * Return:
  *  void
  **************************************************************
  */
 
-void setGraphicsMode( LCD128 *lcd )
+void lcd128ClearText( LCD128 *lcd )
 {
-  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION );
-  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION | LCD128_G_FUNCTION );
+  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION );
+  sendInstruction128( lcd, 0x01 );
+  delay( 2 );
+  sendInstruction128( lcd, 0x02 );
+  lcd->cx = 0;
+  lcd->cy = 0;
   delay( 5 );
 }
 
@@ -138,6 +145,8 @@ void setGraphicsMode( LCD128 *lcd )
 
 void lcd128CursorPosition( LCD128 *lcd, int x, int y )
 {
+  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION );
+  
   if ( ( x > lcd->cols ) || ( x < 0 ) )
   {
     return;
@@ -228,23 +237,56 @@ void lcd128Printf( LCD128 *lcd, const char *string, ... )
 }
 
 /*
- * Clears the lcd
+ * Set lcd to graphics mode
  *
  * Parameters:
- *  lcd: screen to clear
+ *  lcd: to set graphics mode
  *
  * Return:
  *  void
  **************************************************************
  */
 
-void lcd128Clear( LCD128 *lcd )
+void setGraphicsMode( LCD128 *lcd )
 {
-  sendInstruction128( lcd, 0x01 );
-  sendInstruction128( lcd, 0x02 );
-  lcd->cx = 0;
-  lcd->cy = 0;
+  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION );
+  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION | LCD128_RE_FUNCTION | LCD128_G_FUNCTION );
   delay( 5 );
+}
+
+/*
+ * Clear the graphics buffer
+ *
+ * Parameters:
+ *  lcd: pointer to screen buffer
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128ClearGraphics( LCD128 *lcd )
+{
+  for ( uint8_t y = 0; y < 64; y++ )
+  {
+    if ( y < 32 )
+    {
+      sendInstruction128( lcd, 0x80 | y );
+      sendInstruction128( lcd, 0x80 );
+    }
+
+    else
+    {
+      sendInstruction128( lcd, 0x80 | y - 32 );
+      sendInstruction128( lcd, 0x88 );
+    }
+
+    for ( uint8_t x = 0; x < 8; x++ )
+    {
+      sendData128( lcd, 0x00 );
+      sendData128( lcd, 0x00 );
+    }
+  }
 }
 
 /*
@@ -260,9 +302,33 @@ void lcd128Clear( LCD128 *lcd )
  **************************************************************
  */
 
-void lcdGraphicsPosition( LCD128 *lcd, int x, int y )
+void lcd128DrawPixel( LCD128 *lcd, int x, int y )
 {
+  if ( x < LCD128_WIDTH && y < LCD128_HEIGHT )
+  {
+    lcd->current[ ( ( x ) + ( ( y / 8 ) * 128 ) ) ] |= 0x01 << y % 8;
+  }
+}
 
+/*
+ * Clear the pixel at x, y
+ *
+ * Parameters:
+ *  lcd: holds the pixel info
+ *  x  : horizontal position
+ *  y  : vertical position
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128ClearPixel( LCD128 *lcd, int x, int y )
+{
+  if ( x < LCD128_WIDTH && y < LCD128_HEIGHT )
+  {
+    lcd->current[ ( ( x ) + ( ( y / 8 ) * 128 ) ) ] &= 0xFE << y % 8;
+  }
 }
 
 /*
@@ -277,9 +343,45 @@ void lcdGraphicsPosition( LCD128 *lcd, int x, int y )
  **************************************************************
  */
 
-void lcdUpdateScreen( LCD128 *lcd )
+void lcd128UpdateScreen( LCD128 *lcd )
 {
+  uint16_t index = 0;
+  uint8_t temp, dataBit;
 
+  for ( uint8_t y = 0; y < 64; y++ )
+  {
+    for ( uint8_t x = 0; x < 8; x++ )
+    {
+      if ( y < 32 )
+      {
+        sendInstruction128( lcd, 0x80 | y );
+        sendInstruction128( lcd, 0x80 | x );
+      }
+
+      else
+      {
+        sendInstruction128( lcd, 0x80 | y - 32 );
+        sendInstruction128( lcd, 0x88 | x );
+      }
+
+      index = (((y / 8) * 128 ) + ( x * 16));
+      dataBit = y % 8;
+
+      temp = ( ( (lcd->current[ index     ] >> dataBit ) & 0x01 ) << 7 ) | ( ( (lcd->current[ index + 1 ] >> dataBit ) & 0x01 ) << 6 ) |
+             ( ( (lcd->current[ index + 2 ] >> dataBit ) & 0x01 ) << 5 ) | ( ( (lcd->current[ index + 3 ] >> dataBit ) & 0x01 ) << 4 ) |
+             ( ( (lcd->current[ index + 4 ] >> dataBit ) & 0x01 ) << 3 ) | ( ( (lcd->current[ index + 5 ] >> dataBit ) & 0x01 ) << 2 ) |
+             ( ( (lcd->current[ index + 6 ] >> dataBit ) & 0x01 ) << 1 ) | ( ( (lcd->current[ index + 7 ] >> dataBit ) & 0x01 ) << 0 );
+
+      sendData128( lcd, temp );
+      
+      temp = ( ( (lcd->current[ index +  8 ] >> dataBit ) & 0x01 ) << 7 ) | ( ( (lcd->current[ index +  9 ] >> dataBit ) & 0x01 ) << 6 ) |
+             ( ( (lcd->current[ index + 10 ] >> dataBit ) & 0x01 ) << 5 ) | ( ( (lcd->current[ index + 11 ] >> dataBit ) & 0x01 ) << 4 ) |
+             ( ( (lcd->current[ index + 12 ] >> dataBit ) & 0x01 ) << 3 ) | ( ( (lcd->current[ index + 13 ] >> dataBit ) & 0x01 ) << 2 ) |
+             ( ( (lcd->current[ index + 14 ] >> dataBit ) & 0x01 ) << 1 ) | ( ( (lcd->current[ index + 15 ] >> dataBit ) & 0x01 ) << 0 );
+      
+      sendData128( lcd, temp );
+    }
+  }
 }
 
 /*
@@ -322,9 +424,6 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   lcd->cx = 0;
   lcd->cy = 0;
 
-  lcd->newBuffer = ( Buffer* )malloc( sizeof( Buffer ) );
-  lcd->current   = ( Buffer* )malloc( sizeof( Buffer ) );
-
   pinMode( lcd->RS , OUTPUT );
   pinMode( lcd->RW , OUTPUT );
   pinMode( lcd->E  , OUTPUT );
@@ -351,10 +450,10 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   digitalWrite( lcd->RST, HIGH );
   delay( 50 );
   
-  sendInstruction128( lcd, 0x30 );
-  sendInstruction128( lcd, 0x0E );
-  sendInstruction128( lcd, 0x06 );
-  sendInstruction128( lcd, 0x01 );
+  sendInstruction128( lcd, 0x30 ); //Function Set 
+  sendInstruction128( lcd, 0x0C ); //Display Control
+  sendInstruction128( lcd, 0x06 ); //Entry Mode
+  sendInstruction128( lcd, 0x01 ); //Clear
 
   delay( 2 );
 

@@ -54,23 +54,16 @@
 #define LCD128_STAND_BY          0b00000001
 #define LCD128_SCROLL_RAM        0b00000010
 #define LCD128_REVERSE           0b00000100
-#define LCD128_EXTENDED_FUNCTION 0b00001000
-#define LCD128_SCROLL_ADDRESS    0b00010000
-#define LCD128_GRAPHICS_DISPLAY  0b00100000
+#define LCD128_EXTENDED_FUNCTION 0b00100000
+#define LCD128_SCROLL_ADDRESS    0b01000000
+#define LCD128_GRAPHICS_DISPLAY  0b10000000
 
 #define LCD128_G_FUNCTION        0b00000010 //Graphics on/off
 
 #define LCD128_WIDTH  128
 #define LCD128_HEIGHT  64
 
-#define LCD128_PIXELS LCD128_WIDTH * LCD128_HEIGHT
-#define LCD128_BYTES_PER_WIDTH LCD128_WIDTH / 8
-#define LCD128_PIXEL_BYTES LCD128_BYTES_PER_WIDTH * LCD128_HEIGHT
-
-typedef struct _buffer
-{
-  uint8_t frameBuffer[ LCD128_PIXEL_BYTES ];
-} Buffer;
+#define LCD128_PIXELS ( LCD128_WIDTH * ( LCD128_HEIGHT / 8 ) )
 
 typedef struct _lcd128
 {
@@ -94,26 +87,32 @@ typedef struct _lcd128
   int cols;
   int rows;
 
-  Buffer* newBuffer;
-  Buffer* current;
+  uint8_t newBuffer[ LCD128_PIXELS ];
+  uint8_t current[ LCD128_PIXELS ];
 
 } LCD128;
 
 LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int PSB, int RST );
 
-static void pulseEnable128( LCD128 *lcd );
+void pulseEnable128( LCD128 *lcd );
 
 void sendData128( LCD128 *lcd, const int data );
 
 void sendInstruction128( LCD128 *lcd, const int instruction );
 
-void setTextMode( LCD128 *lcd );
 
 void setGraphicsMode( LCD128 *lcd );
 
-void lcdGraphicsPosition( LCD128 *lcd, int x, int y );
+void lcd128ClearGraphics( LCD128 *lcd );
 
-void lcdUpdateScreen( LCD128 *lcd );
+void lcd128DrawPixel( LCD128 *lcd, int x, int y );
+
+void lcd128ClearPixel( LCD128 *lcd, int x, int y );
+
+void lcd128UpdateScreen( LCD128 *lcd );
+
+
+void setTextMode( LCD128 *lcd );
 
 void lcd128Clear( LCD128 *lcd );
 
