@@ -67,9 +67,9 @@
 
 typedef struct _lcd128
 {
-  int RS;  // register select
-  int RW;  // read/write
-  int E;   // enable
+  int  RS; // register select
+  int  RW; // read/write
+  int   E; // enable
   int DB0; // data lines 0-7
   int DB1;
   int DB2;
@@ -87,8 +87,8 @@ typedef struct _lcd128
   int cols;
   int rows;
 
-  uint8_t newBuffer[ LCD128_PIXELS ];
-  uint8_t current[ LCD128_PIXELS ];
+  uint16_t buffer [ LCD128_HEIGHT ][ LCD128_WIDTH / 8 ];
+  uint16_t current[ LCD128_HEIGHT ][ LCD128_WIDTH / 8 ];
 
 } LCD128;
 
@@ -114,7 +114,7 @@ void lcd128UpdateScreen( LCD128 *lcd );
 
 void setTextMode( LCD128 *lcd );
 
-void lcd128Clear( LCD128 *lcd );
+void lcd128ClearText( LCD128 *lcd );
 
 void lcd128CursorPosition( LCD128 *lcd, int x, int y );
 

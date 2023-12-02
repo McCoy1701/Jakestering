@@ -302,9 +302,9 @@ void lcd128ClearGraphics( LCD128 *lcd )
 
 void lcd128DrawPixel( LCD128 *lcd, int x, int y )
 {
-  if ( x < LCD128_WIDTH && y < LCD128_HEIGHT )
+  if ( ( x < LCD128_WIDTH && x > 0 ) || ( y < LCD128_HEIGHT && y > 0 ) )
   {
-    lcd->current[ ( ( x ) + ( ( y / 8 ) * 128 ) ) ] |= 0x01 << y % 8;
+    lcd->buffer[ y ][ x / 8 ] |= ( 0x01 << ( 16 - ( x % 16 ) ) );
   }
 }
 
@@ -323,9 +323,9 @@ void lcd128DrawPixel( LCD128 *lcd, int x, int y )
 
 void lcd128ClearPixel( LCD128 *lcd, int x, int y )
 {
-  if ( x < LCD128_WIDTH && y < LCD128_HEIGHT )
+  if ( ( x < LCD128_WIDTH && x > 0 ) || ( y < LCD128_HEIGHT && y > 0 ) )
   {
-    lcd->current[ ( ( x ) + ( ( y / 8 ) * 128 ) ) ] &= 0xFE << y % 8;
+    lcd->buffer[ y ][ x / 8 ] &= ~( 0x01 << ( 16 - ( y % 8 ) ) );
   }
 }
 
@@ -343,7 +343,7 @@ void lcd128ClearPixel( LCD128 *lcd, int x, int y )
 
 void lcd128UpdateScreen( LCD128 *lcd )
 {
-  uint16_t index = 0;
+ /* uint16_t index = 0;
   uint8_t temp, dataBit;
 
   for ( uint8_t y = 0; y < 64; y++ )
@@ -379,7 +379,7 @@ void lcd128UpdateScreen( LCD128 *lcd )
       
       sendData128( lcd, temp );
     }
-  }
+  }*/
 }
 
 /*
