@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "jakestering.h"
 #include "lcd128x64.h"
@@ -48,7 +49,7 @@ int main( int argc, char **argv )
   {
     for ( int x = 0; x < 16; x++ )
     {
-      array[y][x] = 0xFFFF;
+      lcd->buffer[y][x] = 0xFFFF;
     }
   }
   
@@ -73,7 +74,7 @@ int main( int argc, char **argv )
       temp = array[ y ][ x ];
       sendData128( lcd, temp );
     }
-  }*/
+  }
 
     sendInstruction128( lcd, 0x80 );
     sendInstruction128( lcd, 0x80 );
@@ -84,7 +85,7 @@ int main( int argc, char **argv )
       sendData128( lcd, temp );
       temp = array[ 0 ][ x ];
       sendData128( lcd, temp );
-    }
+    }*/
   return 0;
 }
 

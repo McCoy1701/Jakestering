@@ -343,43 +343,36 @@ void lcd128ClearPixel( LCD128 *lcd, int x, int y )
 
 void lcd128UpdateScreen( LCD128 *lcd )
 {
- /* uint16_t index = 0;
   uint8_t temp, dataBit;
 
   for ( uint8_t y = 0; y < 64; y++ )
   {
+    
+    if ( y < 32 )
+    {
+      sendInstruction128( lcd, 0x80 | y );
+      sendInstruction128( lcd, 0x80 );
+    }
+
+    else
+    {
+      sendInstruction128( lcd, 0x80 | y - 32 );
+      sendInstruction128( lcd, 0x88 );
+    }
+  
     for ( uint8_t x = 0; x < 8; x++ )
     {
-      if ( y < 32 )
+      if ( memcmp( lcd->current, lcd->buffer, sizeof( lcd->buffer ) ) != 0 )
       {
-        sendInstruction128( lcd, 0x80 | y );
-        sendInstruction128( lcd, 0x80 | x );
+        lcd->current[ y ][ x ] = lcd->buffer[ y ][ x ];
+
+        temp = lcd->buffer[ y ][ x ] >> 8;
+        sendData( lcd, temp );
+        temp = lcd->buffer[ y ][ x ];
+        sendData( lcd, temp );
       }
-
-      else
-      {
-        sendInstruction128( lcd, 0x80 | y - 32 );
-        sendInstruction128( lcd, 0x88 | x );
-      }
-
-      index = (((y / 8) * 128 ) + ( x * 16));
-      dataBit = y % 8;
-
-      temp = ( ( (lcd->current[ index     ] >> dataBit ) & 0x01 ) << 7 ) | ( ( (lcd->current[ index + 1 ] >> dataBit ) & 0x01 ) << 6 ) |
-             ( ( (lcd->current[ index + 2 ] >> dataBit ) & 0x01 ) << 5 ) | ( ( (lcd->current[ index + 3 ] >> dataBit ) & 0x01 ) << 4 ) |
-             ( ( (lcd->current[ index + 4 ] >> dataBit ) & 0x01 ) << 3 ) | ( ( (lcd->current[ index + 5 ] >> dataBit ) & 0x01 ) << 2 ) |
-             ( ( (lcd->current[ index + 6 ] >> dataBit ) & 0x01 ) << 1 ) | ( ( (lcd->current[ index + 7 ] >> dataBit ) & 0x01 ) << 0 );
-
-      sendData128( lcd, temp );
-      
-      temp = ( ( (lcd->current[ index +  8 ] >> dataBit ) & 0x01 ) << 7 ) | ( ( (lcd->current[ index +  9 ] >> dataBit ) & 0x01 ) << 6 ) |
-             ( ( (lcd->current[ index + 10 ] >> dataBit ) & 0x01 ) << 5 ) | ( ( (lcd->current[ index + 11 ] >> dataBit ) & 0x01 ) << 4 ) |
-             ( ( (lcd->current[ index + 12 ] >> dataBit ) & 0x01 ) << 3 ) | ( ( (lcd->current[ index + 13 ] >> dataBit ) & 0x01 ) << 2 ) |
-             ( ( (lcd->current[ index + 14 ] >> dataBit ) & 0x01 ) << 1 ) | ( ( (lcd->current[ index + 15 ] >> dataBit ) & 0x01 ) << 0 );
-      
-      sendData128( lcd, temp );
     }
-  }*/
+  }
 }
 
 /*
