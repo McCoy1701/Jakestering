@@ -109,7 +109,11 @@ void lcd128DrawPixel( LCD128 *lcd, int x, int y );
 
 void lcd128ClearPixel( LCD128 *lcd, int x, int y );
 
+void lcd128DrawLine( LCD128 *lcd, int x1, int y1, int x2, int y2 );
+
 void lcd128UpdateScreen( LCD128 *lcd );
+
+int compareRows( uint16_t array1[ LCD128_HEIGHT ][ LCD128_WIDTH / 8 ], uint16_t array2[ LCD128_HEIGHT ][ LCD128_WIDTH / 8 ], int row );
 
 
 void setTextMode( LCD128 *lcd );

@@ -25,67 +25,84 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "jakestering.h"
 #include "lcd128x64.h"
 
+typedef struct _ball
+{
+  int x, y;
+  int velx, vely;
+  int speed;
+  float friction;
+} Ball;
+
+Ball* ballInit( int x, int y, int speed, float friction );
+float getRandomNumber( float value1, float value2 );
+
 LCD128 *lcd;
 
-uint16_t array[64][16] = { 0 };
-
-uint8_t temp;
+Ball *ball;
 
 int main( int argc, char **argv )
 {
+  srand( time( NULL ) );
   setupIO();
 
   lcd = initLcd128( 0, 1, 2,  3, 4, 5, 6, 7, 8, 9, 10, 11, 12 );
+  
+  ball = ballInit( 0, 0, 10, 0.89f);
 
   setGraphicsMode( lcd );
 
   lcd128ClearGraphics( lcd );
-
-  for ( int y = 0; y < 64; y++ )
-  {
-    for ( int x = 0; x < 16; x++ )
-    {
-      lcd->buffer[y][x] = 0xFFFF;
-    }
-  }
   
-  /*for ( int y = 0; y < 64; y++ )
+  while (1)
   {
-    if ( y < 32 )
+    ball->x += ball->velx;
+    ball->y += ball->vely;
+    
+    if ( ( ball->x >= ( 127 ) ) || ( ball->x <= 0 ) )
     {
-      sendInstruction128( lcd, 0x80 | y );
-      sendInstruction128( lcd, 0x80 );
+      ball->velx = -ball->velx * getRandomNumber( 1.0f, 2.0f );
+    }
+    
+    if ( ( ball->y >= ( 63 ) ) || ( ball->y <= 0 ) )
+    {
+      ball->vely = -ball->vely * getRandomNumber( 1.0f, 2.0f );
     }
 
-    else
-    {
-      sendInstruction128( lcd, 0x80 | y - 32 );
-      sendInstruction128( lcd, 0x88 );
-    }
+  //  ball->velx *= ball->friction;
+  //  ball->vely *= ball->friction;
+    
+    lcd128DrawPixel( lcd, ball->x, ball->y );
 
-    for ( int x = 0; x < 8; x++ )
-    {
-      temp = array[ y ][ x ] >> 8;
-      sendData128( lcd, temp );
-      temp = array[ y ][ x ];
-      sendData128( lcd, temp );
-    }
+    lcd128UpdateScreen( lcd );
   }
 
-    sendInstruction128( lcd, 0x80 );
-    sendInstruction128( lcd, 0x80 );
-    
-    for ( int x = 0; x < 8; x++ )
-    {
-      temp = array[ 0 ][ x ] >> 8;
-      sendData128( lcd, temp );
-      temp = array[ 0 ][ x ];
-      sendData128( lcd, temp );
-    }*/
+  free( lcd );
+  free( ball );
+
   return 0;
+}
+
+Ball* ballInit( int x, int y, int speed, float friction )
+{
+  Ball *ball = ( Ball* )malloc( sizeof( Ball ) );
+  
+  ball->x = x;
+  ball->y = y;
+  ball->speed = speed;
+  ball->velx = speed;
+  ball->vely = speed;
+  ball->friction = friction;
+
+  return ball;
+}
+
+float getRandomNumber( float value1, float value2 )
+{
+  return value1 + ( rand() / ( float )RAND_MAX ) * ( value2 - value1 );
 }
 

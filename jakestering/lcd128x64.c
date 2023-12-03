@@ -25,6 +25,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 #include "jakestering.h"
 #include "lcd128x64.h"
@@ -302,9 +304,9 @@ void lcd128ClearGraphics( LCD128 *lcd )
 
 void lcd128DrawPixel( LCD128 *lcd, int x, int y )
 {
-  if ( ( x < LCD128_WIDTH && x > 0 ) || ( y < LCD128_HEIGHT && y > 0 ) )
+  if ( ( x <= LCD128_WIDTH && x >= 0 ) || ( y <= LCD128_HEIGHT && y >= 0 ) )
   {
-    lcd->buffer[ y ][ x / 8 ] |= ( 0x01 << ( 16 - ( x % 16 ) ) );
+    lcd->buffer[ y ][ x / 16 ] |= ( 1 << ( 15 - ( x % 16 ) ) );
   }
 }
 
@@ -325,7 +327,50 @@ void lcd128ClearPixel( LCD128 *lcd, int x, int y )
 {
   if ( ( x < LCD128_WIDTH && x > 0 ) || ( y < LCD128_HEIGHT && y > 0 ) )
   {
-    lcd->buffer[ y ][ x / 8 ] &= ~( 0x01 << ( 16 - ( y % 8 ) ) );
+    lcd->buffer[ y ][ x / 16 ] &= ~( 0x01 << ( 15 - ( y % 16 ) ) );
+  }
+}
+
+/*
+ * Draw a line between two points
+ *
+ * Parameters:
+ *  x1: first x position
+ *  y1: first y position
+ *  x2: second x position
+ *  y2: second y position
+ *  
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128DrawLine( LCD128 *lcd, int x1, int y1, int x2, int y2 )
+{
+  int deltaX =  abs( x2 - x1 ), screenX = x1 < x2 ? 1 : -1;
+  int deltaY = -abs( y2 - y1 ), screenY = y1 < y2 ? 1 : -1;
+  int error = deltaX + deltaY;
+  int error2;
+
+  while ( 1 )
+  {
+    lcd128DrawPixel( lcd, x1, y1 );
+    
+    if ( x1 == x2 && y1 == y2 ) break;
+    
+    error2 = 2 * error;
+    
+    if ( error2 >= deltaY )
+    { 
+      error += deltaY;
+      x1 += screenX;
+    }
+
+    if ( error2 <= deltaX )
+    {
+      error += deltaX;
+      y1 += screenY;
+    }
   }
 }
 
@@ -345,33 +390,34 @@ void lcd128UpdateScreen( LCD128 *lcd )
 {
   uint8_t temp, dataBit;
 
-  for ( uint8_t y = 0; y < 64; y++ )
+  if ( memcmp( lcd->current, lcd->buffer, sizeof( lcd->buffer ) ) != 0 )
   {
+    for ( uint8_t y = 0; y < 64; y++ )
+    {
     
-    if ( y < 32 )
-    {
-      sendInstruction128( lcd, 0x80 | y );
-      sendInstruction128( lcd, 0x80 );
-    }
-
-    else
-    {
-      sendInstruction128( lcd, 0x80 | y - 32 );
-      sendInstruction128( lcd, 0x88 );
-    }
-  
-    for ( uint8_t x = 0; x < 8; x++ )
-    {
-      if ( memcmp( lcd->current, lcd->buffer, sizeof( lcd->buffer ) ) != 0 )
+      if ( y < 32 )
       {
-        lcd->current[ y ][ x ] = lcd->buffer[ y ][ x ];
+        sendInstruction128( lcd, 0x80 | y );
+        sendInstruction128( lcd, 0x80 );
+      }
 
+      else
+      {
+        sendInstruction128( lcd, 0x80 | y - 32 );
+        sendInstruction128( lcd, 0x88 );
+      }
+  
+      for ( uint8_t x = 0; x < 8; x++ )
+      {
         temp = lcd->buffer[ y ][ x ] >> 8;
-        sendData( lcd, temp );
+        sendData128( lcd, temp );
         temp = lcd->buffer[ y ][ x ];
-        sendData( lcd, temp );
+        sendData128( lcd, temp );
       }
     }
+
+    memcpy( lcd->current, lcd->buffer, sizeof( lcd->current ) );
+    memset( lcd->buffer, 0, sizeof( lcd->buffer ) );
   }
 }
 
