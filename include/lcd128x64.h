@@ -115,6 +115,12 @@ void lcd128DrawRect(LCD128 *lcd, int x, int y, int width, int height );
 
 void lcd128DrawFilledRect(LCD128 *lcd, int x, int y, int width, int height );
 
+void circleInternal( LCD128 *lcd, int xc, int yc, int x, int y );
+
+void lcd128DrawCircle( LCD128 *lcd, int xc, int yc, int r );
+
+void lcd128DrawFilledCircle( LCD128 *lcd, int xc, int yc, int r );
+
 void lcd128UpdateScreen( LCD128 *lcd );
 
 

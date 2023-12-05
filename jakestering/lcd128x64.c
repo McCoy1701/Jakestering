@@ -422,6 +422,95 @@ void lcd128DrawFilledRect(LCD128 *lcd, int x, int y, int width, int height )
 }
 
 /*
+ * Internal circle draw routine
+ *
+ * Parameters:
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void circleInternal( LCD128 *lcd, int xc, int yc, int x, int y )
+{
+  lcd128DrawPixel( lcd, xc + x, yc + y );
+  lcd128DrawPixel( lcd, xc + x, yc - y );
+  lcd128DrawPixel( lcd, xc - x, yc + y );
+  lcd128DrawPixel( lcd, xc - x, yc - y );
+  lcd128DrawPixel( lcd, xc + y, yc + x );
+  lcd128DrawPixel( lcd, xc + y, yc - x );
+  lcd128DrawPixel( lcd, xc - y, yc + x );
+  lcd128DrawPixel( lcd, xc - y, yc - x );
+}
+
+/*
+ * Draw a circle at given x, y with given radius using bresenham's circle algorithm
+ *
+ * Parameters:
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128DrawCircle( LCD128 *lcd, int xc, int yc, int r )
+{
+  int x = 0;
+  int y = r;
+  int decision = 5 - ( 4 * r );
+
+  while ( x <= y )
+  {
+    circleInternal( lcd, xc, yc, x, y );
+
+    if ( decision > 0 )
+    {
+      y--;
+      decision -= 8 *  y;
+    }
+
+    x++;
+    
+    decision += 8 * x + 4;
+  }
+}
+
+/*
+ * Draw a circle at given x, y with given radius using bresenham's circle algorithm
+ *
+ * Parameters:
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128DrawFilledCircle( LCD128 *lcd, int xc, int yc, int r )
+{
+  int x = 0;
+  int y = r;
+  int decision = 5 - ( 4 * r );
+
+  while ( x <= y )
+  {
+    lcd128DrawLine( lcd, xc - x, yc - y, xc + x, yc - y );
+    lcd128DrawLine( lcd, xc - y, yc - x, xc + y, yc - x );
+    lcd128DrawLine( lcd, xc - y, yc + x, xc + y, yc + x );
+    lcd128DrawLine( lcd, xc - x, yc + y, xc + x, yc + y );
+
+    if ( decision > 0 )
+    {
+      y--;
+      decision -= 8 *  y;
+    }
+
+    x++;
+    
+    decision += 8 * x + 4;
+  }
+}
+
+/*
  * Update the lcd with contents of buffer
  *
  * Parameters:

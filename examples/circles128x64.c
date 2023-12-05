@@ -1,6 +1,6 @@
 /*
- * main.c:
- *  Entry Point for jakestering
+ * circles128x64.c:
+ *  Show off the circle drawing and fill routines
  *
  * Copyright (c) 2023 Jacob Kellum <jkellum819@gmail.com>
  *************************************************************************
@@ -24,8 +24,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
 #include "jakestering.h"
 #include "lcd128x64.h"
