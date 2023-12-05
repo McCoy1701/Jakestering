@@ -425,6 +425,10 @@ void lcd128DrawFilledRect(LCD128 *lcd, int x, int y, int width, int height )
  * Internal circle draw routine
  *
  * Parameters:
+ *  xc: center x position
+ *  yc: center y position
+ *  x : offset
+ *  y : offset
  *
  * Return:
  *  void
@@ -447,6 +451,9 @@ void circleInternal( LCD128 *lcd, int xc, int yc, int x, int y )
  * Draw a circle at given x, y with given radius using bresenham's circle algorithm
  *
  * Parameters:
+ *  xc: center x position
+ *  xy: center y position
+ *  r : radius
  *
  * Return:
  *  void
@@ -462,7 +469,6 @@ void lcd128DrawCircle( LCD128 *lcd, int xc, int yc, int r )
   while ( x <= y )
   {
     circleInternal( lcd, xc, yc, x, y );
-
     if ( decision > 0 )
     {
       y--;
@@ -479,6 +485,9 @@ void lcd128DrawCircle( LCD128 *lcd, int xc, int yc, int r )
  * Draw a circle at given x, y with given radius using bresenham's circle algorithm
  *
  * Parameters:
+ *  xc: center x position
+ *  xy: center y position
+ *  r : radius
  *
  * Return:
  *  void
@@ -508,6 +517,76 @@ void lcd128DrawFilledCircle( LCD128 *lcd, int xc, int yc, int r )
     
     decision += 8 * x + 4;
   }
+}
+
+/*
+ * Draw a triganle at given coordinates 
+ *
+ * Parameters:
+ * x1: first point x
+ * y1: first point y
+ * x2: second point x
+ * y2: second point y
+ * x3: third point x
+ * x3: third point y
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128DrawTriangle( LCD128 *lcd, int x1, int y1, int x2, int y2, int x3, int y3 )
+{
+  lcd128DrawLine( lcd, x1, y1, x2, y2 );
+  lcd128DrawLine( lcd, x2, y2, x3, y3 );
+  lcd128DrawLine( lcd, x3, y3, x1, y1 );
+}
+
+/*
+ * Draw a triganle at given coordinates 
+ *
+ * Parameters:
+ * x1: first point x
+ * y1: first point y
+ * x2: second point x
+ * y2: second point y
+ * x3: third point x
+ * x3: third point y
+ *
+ * Return:
+ *  void
+ **************************************************************
+ */
+
+void lcd128DrawFilledTriangle( LCD128 *lcd, int x1, int y1, int x2, int y2, int x3, int y3 )
+{
+ int maxX = MAX( x1, MAX( x2, x3 ) );
+ int minX = MIN( x1, MIN( x2, x3 ) );
+ int maxY = MAX( y1, MAX( y2, y3 ) );
+ int minY = MIN( y1, MIN( y2, y3 ) );
+
+ int vx1 = x2 - x1;
+ int vy1 = y2 - y1;
+
+ int vx2 = x3 - x1;
+ int vy2 = y3 - y1;
+
+ for ( int x = minX; x <= maxX; x++ )
+ {
+    for ( int y = minY; y <= maxY; y++)
+    {
+      int qx = x - x1;
+      int qy = y - y1;
+
+      float s = (float)( ( qx * vy2 ) - ( qy * vx2 ) ) / ( ( vx1 * vy2 ) - ( vy1 * vx2 ) );
+      float t = (float)( ( vx1 * qy ) - ( vy1 * qx ) ) / ( ( vx1 * vy2 ) - ( vy1 * vx2 ) );
+
+      if ( ( s >= 0 ) && ( t >= 0 ) && ( s + t <= 1 ) )
+      {
+        lcd128DrawPixel( lcd, x, y );
+      }
+    }
+ }
 }
 
 /*

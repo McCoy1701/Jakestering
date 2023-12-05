@@ -1,6 +1,6 @@
 CC = gcc
 CINC = -Iinclude
-CFLAGS = -g 
+CFLAGS = -g -lm 
 
 BIN_DIR = bin
 OBJ_DIR = obj

@@ -53,5 +53,8 @@
 #define PUD_DOWN      1
 #define PUD_UP        2
 
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
 #endif
 

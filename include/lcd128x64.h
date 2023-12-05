@@ -121,6 +121,10 @@ void lcd128DrawCircle( LCD128 *lcd, int xc, int yc, int r );
 
 void lcd128DrawFilledCircle( LCD128 *lcd, int xc, int yc, int r );
 
+void lcd128DrawTriangle( LCD128 *lcd, int x1, int y1, int x2, int y2, int x3, int y3 );
+
+void lcd128DrawFilledTriangle( LCD128 *lcd, int x1, int y1, int x2, int y2, int x3, int y3 );
+
 void lcd128UpdateScreen( LCD128 *lcd );
 
 

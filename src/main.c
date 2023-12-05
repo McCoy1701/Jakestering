@@ -41,14 +41,7 @@ int main( int argc, char **argv )
 
   lcd128ClearGraphics( lcd );
 
-  lcd128DrawCircle( lcd, 34, 25, 12 );
-  lcd128DrawCircle( lcd, 60, 25, 12 );
-  lcd128DrawCircle( lcd, 86, 25, 12 );
-  
-  lcd128DrawCircle( lcd, 47, 37, 12 );
-  lcd128DrawCircle( lcd, 73, 37, 12 );
- 
-  lcd128DrawFilledCircle( lcd, 100, 50, 8 );
+  lcd128DrawFilledTriangle( lcd, 0, 10, 20, 50, 30, 30 ); 
 
   lcd128UpdateScreen( lcd );
 
