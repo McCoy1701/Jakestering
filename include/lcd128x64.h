@@ -111,9 +111,11 @@ void lcd128ClearPixel( LCD128 *lcd, int x, int y );
 
 void lcd128DrawLine( LCD128 *lcd, int x1, int y1, int x2, int y2 );
 
-void lcd128UpdateScreen( LCD128 *lcd );
+void lcd128DrawRect(LCD128 *lcd, int x, int y, int width, int height );
 
-int compareRows( uint16_t array1[ LCD128_HEIGHT ][ LCD128_WIDTH / 8 ], uint16_t array2[ LCD128_HEIGHT ][ LCD128_WIDTH / 8 ], int row );
+void lcd128DrawFilledRect(LCD128 *lcd, int x, int y, int width, int height );
+
+void lcd128UpdateScreen( LCD128 *lcd );
 
 
 void setTextMode( LCD128 *lcd );
@@ -122,11 +124,11 @@ void lcd128ClearText( LCD128 *lcd );
 
 void lcd128CursorPosition( LCD128 *lcd, int x, int y );
 
-void lcd128PutChar( LCD128 *lcd, unsigned char character );
+void lcd128PutChar( LCD128 *lcd, unsigned char character, int byte );
 
-void lcd128Puts( LCD128 *lcd, const char* string );
+void lcd128Puts( LCD128 *lcd, const char* string, int byte );
 
-void lcd128Printf( LCD128 *lcd, const char *string, ... );
+void lcd128Printf( LCD128 *lcd, int byte, const char *string, ... );
 
 #endif
 

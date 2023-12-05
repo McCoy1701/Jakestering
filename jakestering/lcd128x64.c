@@ -106,6 +106,8 @@ void setTextMode( LCD128 *lcd )
   sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION );
   sendInstruction128( lcd, LCD128_DISPLAY_CLEAR );
   sendInstruction128( lcd, LCD128_RETURN_HOME );
+  lcd->cx = 0;
+  lcd->cy = 0;
   delay( 5 );
 }
 
@@ -145,8 +147,6 @@ void lcd128ClearText( LCD128 *lcd )
 
 void lcd128CursorPosition( LCD128 *lcd, int x, int y )
 {
-  sendInstruction128( lcd, LCD128_FUNCTION_SET | LCD128_DL_FUNCTION );
-  
   if ( ( x > lcd->cols ) || ( x < 0 ) )
   {
     return;
@@ -157,7 +157,7 @@ void lcd128CursorPosition( LCD128 *lcd, int x, int y )
     return;
   }
 
-  sendInstruction128( lcd, x + ( LCD128_DDRAM_SET | rowsOffset[y] ) );
+  sendInstruction128( lcd, x + ( LCD128_DDRAM_SET | rowsOffset[ y ] ) );
 
   lcd->cx = x;
   lcd->cy = y;
@@ -175,8 +175,9 @@ void lcd128CursorPosition( LCD128 *lcd, int x, int y )
  **************************************************************
  */
 
-void lcd128PutChar( LCD128 *lcd, unsigned char character )
+void lcd128PutChar( LCD128 *lcd, unsigned char character, int byte )
 {
+  if( byte ) sendData128( lcd, 0x20 );
   sendData128( lcd, character );
   
   if ( ++lcd->cx == lcd->cols )
@@ -204,11 +205,11 @@ void lcd128PutChar( LCD128 *lcd, unsigned char character )
  **************************************************************
  */
 
-void lcd128Puts( LCD128 *lcd, const char* string )
+void lcd128Puts( LCD128 *lcd, const char* string, int byte )
 {
   while ( *string )
   {
-    lcd128PutChar( lcd, *string++ );
+    lcd128PutChar( lcd, *string++, byte );
   }
 }
 
@@ -224,7 +225,7 @@ void lcd128Puts( LCD128 *lcd, const char* string )
  **************************************************************
  */
 
-void lcd128Printf( LCD128 *lcd, const char *string, ... )
+void lcd128Printf( LCD128 *lcd, int byte, const char *string, ... )
 {
   char buffer[ 1024 ];
   va_list args;
@@ -233,7 +234,7 @@ void lcd128Printf( LCD128 *lcd, const char *string, ... )
   vsnprintf( buffer, sizeof( buffer ), string, args );
   va_end( args );
 
-  lcd128Puts( lcd, buffer );
+  lcd128Puts( lcd, buffer, byte );
 }
 
 /*
@@ -304,7 +305,7 @@ void lcd128ClearGraphics( LCD128 *lcd )
 
 void lcd128DrawPixel( LCD128 *lcd, int x, int y )
 {
-  if ( ( x <= LCD128_WIDTH && x >= 0 ) || ( y <= LCD128_HEIGHT && y >= 0 ) )
+  if ( ( x < LCD128_WIDTH && x >= 0 ) || ( y < LCD128_HEIGHT && y >= 0 ) )
   {
     lcd->buffer[ y ][ x / 16 ] |= ( 1 << ( 15 - ( x % 16 ) ) );
   }
@@ -371,6 +372,52 @@ void lcd128DrawLine( LCD128 *lcd, int x1, int y1, int x2, int y2 )
       error += deltaX;
       y1 += screenY;
     }
+  }
+}
+
+/*
+ * Draws a rect to the screen at the given point with the given width and height
+ *
+ * Parameters:
+ *  lcd   : Holds screen frame buffer
+ *  x     : Horizontal position
+ *  y     : Vertical position
+ *  width : 
+ *  height:
+ *
+ * Remove:
+ *  void
+ **************************************************************
+ */
+
+void lcd128DrawRect(LCD128 *lcd, int x, int y, int width, int height )
+{
+  lcd128DrawLine( lcd, x, y, width, y );
+  lcd128DrawLine( lcd, width, y, width, height );
+  lcd128DrawLine( lcd, width, height, x, height );
+  lcd128DrawLine( lcd, x, height, x, y );
+}
+
+/*
+ * Draws a filled rect to the screen at the given point with the given width and height
+ *
+ * Parameters:
+ *  lcd   : Holds screen frame buffer
+ *  x     : Horizontal position
+ *  y     : Vertical position
+ *  width : 
+ *  height:
+ *
+ * Remove:
+ *  void
+ **************************************************************
+ */
+
+void lcd128DrawFilledRect(LCD128 *lcd, int x, int y, int width, int height )
+{
+  for ( int i = x; i <= width; i++ )
+  {
+    lcd128DrawLine( lcd, i, y, i, height );
   }
 }
 
