@@ -29,23 +29,52 @@
 
 #include "jakestering.h"
 #include "lcd128x64.h"
+#include "lcd.h"
+#include "keypad.h"
 
-LCD128 *lcd;
+LCD128 *lcd128;
+
+LCD *lcd;
+
+Keypad keypad;
+
 int main( int argc, char **argv )
 {
   setupIO();
 
-  lcd = initLcd128( 0, 1, 2,  3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ); //Initalize the 128x64 lcd
+  lcd128 = initLcd128( 0, 1, 2,  3, 4, 5, 6, 7, 8, 9, 10,  11, 12 ); //Initalize the 128x64 lcd
   
-  setGraphicsMode( lcd );
+  lcd = initLcd( 4, 20,  0, 1, 13,  3, 4, 5, 6, 7, 8, 9, 10 ); //Initialize the 4x20 lcd
 
-  lcd128ClearGraphics( lcd );
+  keypad = initKeypad( 14, 15, 17, 16, 20, 21, 19, 18 );
 
-  lcd128DrawFilledTriangle( lcd, 0, 10, 20, 50, 30, 30 ); 
+  setGraphicsMode( lcd128 );
 
-  lcd128UpdateScreen( lcd );
+  lcd128ClearGraphics( lcd128 );
+
+  lcd128DrawFilledRect( lcd128, 0, 0, 20, 50 ); 
+
+  lcd128UpdateScreen( lcd128 );
+
+  lcdClear( lcd );
+  lcdPosition( lcd, 0, 0 );
+  lcdPrintf( lcd, "Hello, World!" );
+
+  while ( 1 )
+  {
+    char key = checkKeypad( keypad, 0 );
+    if ( key != '\0' )
+    {
+      printf( "%c\n", key );
+
+      //lcdPosition( lcd, 3, 0 );
+      
+      //lcdPrintf( lcd, "%c\n", key );
+    }
+  }
 
   free( lcd );
+  free( lcd128 );
   
   return 0;
 }

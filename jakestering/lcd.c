@@ -206,6 +206,7 @@ void lcdPrintf( LCD *lcd, const char *string, ... )
 void lcdClear( LCD *lcd )
 {
   sendInstruction( lcd, LCD_CLEAR );
+  delay( 2 );
   sendInstruction( lcd, LCD_HOME );
   lcd->cx = 0;
   lcd->cy = 0;
