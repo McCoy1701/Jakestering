@@ -52,7 +52,7 @@ int main( int argc, char **argv )
 
   lcd128ClearGraphics( lcd128 );
 
-  lcd128DrawFilledRect( lcd128, 0, 0, 20, 50 ); 
+  lcd128DrawFilledCircle( lcd128, 20, 20, 15 ); 
 
   lcd128UpdateScreen( lcd128 );
 
@@ -67,15 +67,14 @@ int main( int argc, char **argv )
     {
       printf( "%c\n", key );
 
-      //lcdPosition( lcd, 3, 0 );
+      lcdPosition( lcd, 0, 3 );
       
-      //lcdPrintf( lcd, "%c\n", key );
+      lcdPrintf( lcd, "%c", key );
     }
   }
 
-  free( lcd );
   free( lcd128 );
-  
+  free( lcd );
   return 0;
 }
 
