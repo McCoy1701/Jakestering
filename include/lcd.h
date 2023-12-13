@@ -77,7 +77,6 @@
 typedef struct _lcd
 {
   int RS;
-  int RW;
   int E;
   int DB0;
   int DB1;
@@ -93,7 +92,7 @@ typedef struct _lcd
   int cols;
 } LCD;
 
-LCD* initLcd( int rows, int cols, int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7 );
+LCD* initLcd( int rows, int cols, int RS, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7 );
 
 void pulseEnable( LCD *lcd );
 

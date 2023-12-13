@@ -652,12 +652,11 @@ void lcd128UpdateScreen( LCD128 *lcd )
  **************************************************************
  */
 
-LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int PSB, int RST )
+LCD128 *initLcd128( int RS, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int RST )
 {
   LCD128 *lcd = ( LCD128* )malloc( sizeof( LCD128 ) );
 
   lcd->RS  =  RS;
-  lcd->RW  =  RW;
   lcd->E   =   E;
   lcd->DB0 = DB0;
   lcd->DB1 = DB1;
@@ -667,7 +666,6 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   lcd->DB5 = DB5;
   lcd->DB6 = DB6;
   lcd->DB7 = DB7;
-  lcd->PSB = PSB;
   lcd->RST = RST;
   
   lcd->cols = 16;
@@ -677,7 +675,6 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   lcd->cy = 0;
 
   pinMode( lcd->RS , OUTPUT );
-  pinMode( lcd->RW , OUTPUT );
   pinMode( lcd->E  , OUTPUT );
   pinMode( lcd->DB0, OUTPUT );
   pinMode( lcd->DB1, OUTPUT );
@@ -687,13 +684,10 @@ LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, i
   pinMode( lcd->DB5, OUTPUT );
   pinMode( lcd->DB6, OUTPUT );
   pinMode( lcd->DB7, OUTPUT );
-  pinMode( lcd->PSB, OUTPUT );
   pinMode( lcd->RST, OUTPUT );
 
   digitalWrite( lcd->RS , HIGH );
-  digitalWrite( lcd->RW , LOW  );
   digitalWrite( lcd->E  , LOW  );
-  digitalWrite( lcd->PSB, HIGH );
   digitalWrite( lcd->RST, HIGH  );
 
   delay( 10 );                      //Reset lcd active low

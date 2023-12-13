@@ -308,12 +308,11 @@ void lcdCursorBlink( LCD *lcd, int value )
  **************************************************************
  */
 
-LCD* initLcd( int rows, int cols, int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7 )
+LCD* initLcd( int rows, int cols, int RS, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7 )
 {
   LCD *lcd = ( LCD* )malloc( sizeof( LCD ) );
   
   lcd->RS  =  RS;
-  lcd->RW  =  RW;
   lcd->E   =   E;
   lcd->DB0 = DB0;
   lcd->DB1 = DB1;
@@ -331,7 +330,6 @@ LCD* initLcd( int rows, int cols, int RS, int RW, int E, int DB0, int DB1, int D
   lcd->cy = 0;
 
   pinMode( lcd->RS , OUTPUT );
-  pinMode( lcd->RW , OUTPUT );
   pinMode( lcd->E  , OUTPUT );
   pinMode( lcd->DB0, OUTPUT );
   pinMode( lcd->DB1, OUTPUT );
@@ -343,7 +341,6 @@ LCD* initLcd( int rows, int cols, int RS, int RW, int E, int DB0, int DB1, int D
   pinMode( lcd->DB7, OUTPUT );
 
   digitalWrite( lcd->RS, HIGH );
-  digitalWrite( lcd->RW, LOW  );
   digitalWrite( lcd->E , LOW  );
 
   sendInstruction( lcd, 0b00111000 ); //Set 8-bit operation, 2-line mode, 5x8 character font

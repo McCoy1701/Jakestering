@@ -68,7 +68,6 @@
 typedef struct _lcd128
 {
   int  RS; // register select
-  int  RW; // read/write
   int   E; // enable
   int DB0; // data lines 0-7
   int DB1;
@@ -92,7 +91,7 @@ typedef struct _lcd128
 
 } LCD128;
 
-LCD128 *initLcd128( int RS, int RW, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int PSB, int RST );
+LCD128 *initLcd128( int RS, int E, int DB0, int DB1, int DB2, int DB3, int DB4, int DB5, int DB6, int DB7, int RST );
 
 void pulseEnable128( LCD128 *lcd );
 

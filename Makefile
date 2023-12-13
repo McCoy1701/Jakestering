@@ -41,16 +41,16 @@ $(BUILD_DIR): create $(JAKESTERING_DIR)/jakestering.c $(JAKESTERING_DIR)/lcd128x
 
 .PHONY: install
 install:
-	sudo cp $(INC_DIR)/* /usr/local/include
-	sudo cp $(BUILD_DIR)/libJakestering.so /usr/local/lib
+	sudo cp $(INC_DIR)/* /usr/include
+	sudo cp $(BUILD_DIR)/libJakestering.so /usr/lib
 
 .PHONY: uninstall
 uninstall:
-	sudo rm /usr/local/include/lcd.h
-	sudo rm /usr/local/include/lcd128x64.h
-	sudo rm /usr/local/include/keypad.h
-	sudo rm /usr/local/include/jakestering.h
-	sudo rm /usr/local/lib/libJakestering.so
+	sudo rm /usr/include/lcd.h
+	sudo rm /usr/include/lcd128x64.h
+	sudo rm /usr/include/keypad.h
+	sudo rm /usr/include/jakestering.h
+	sudo rm /usr/lib/libJakestering.so
 
 .PHONY: clean
 clean:
