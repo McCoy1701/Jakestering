@@ -39,15 +39,15 @@ void delay(int milliSeconds);
 
 void delayMicro(int microSeconds);
 
-void pinMode( int pin, int mode );
+void pinMode( const int pin, const int mode );
 
-void pudController( int pin, int PUD );
+void pudController( const int pin, const int PUD );
 
-void digitalWrite( int pin, int value );
+void digitalWrite( const int pin, const int value );
 
-int digitalRead( int pin );
+int digitalRead( const int pin );
 
-void digitalWriteByte( const int value, int pinStart, int pinEnd );
+void digitalWriteByte( const int value, const int pinStart, const int pinEnd );
 
 #endif
 

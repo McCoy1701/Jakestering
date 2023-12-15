@@ -121,7 +121,7 @@ void delayMicro( int microSeconds )
  **************************************************************
  */
 
-void pinMode( int pin, int mode )
+void pinMode( const int pin, const int mode )
 {
   if ( mode == INPUT )
   {
@@ -147,7 +147,7 @@ void pinMode( int pin, int mode )
  **************************************************************
  */
 
-void pudController( int pin, int PUD )
+void pudController( const int pin, const int PUD )
 {
   GPIO_PULL = PUD & 0b11;
   usleep( 5 );
@@ -170,7 +170,7 @@ void pudController( int pin, int PUD )
  **************************************************************
  */
 
-void digitalWrite( int pin, int value )
+void digitalWrite( const int pin, const int value )
 {
   if ( value == LOW )
   {
@@ -194,7 +194,7 @@ void digitalWrite( int pin, int value )
  **************************************************************
  */
 
-int digitalRead( int pin )
+int digitalRead( const int pin )
 {
   if ( GET_GPIO( pin ))
     return HIGH;
@@ -203,7 +203,7 @@ int digitalRead( int pin )
 }
 
 /*
- * Write a byte to a given range of 8 pins
+ * Write a byte to given range
  *
  * Parameters:
  *  value   : data to be writen
@@ -215,7 +215,7 @@ int digitalRead( int pin )
  **************************************************************
  */
 
-void digitalWriteByte( const int value, int pinStart, int pinEnd ) //pin start must be less than pinEnd
+void digitalWriteByte( const int value, const int pinStart, const int pinEnd ) //pin start must be less than pinEnd
 {
   uint32_t pinSet = 0;
   uint32_t pinClr = 0;
@@ -226,8 +226,8 @@ void digitalWriteByte( const int value, int pinStart, int pinEnd ) //pin start m
     printf( "Must be 8 pins 0-7: %d\n", ( pinEnd - pinStart ) );
     return;
   }
-
-  for ( int i = pinStart; i <= pinEnd; i++ )
+  
+  for ( int i = pinStart; i <= pinEnd; i++ ) //hardcode pins 3 - 10 to be the data bus
   {
     if ( ( value & mask ) == 0 )
     {

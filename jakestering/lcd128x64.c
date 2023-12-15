@@ -392,10 +392,10 @@ void lcd128DrawLine( LCD128 *lcd, int x1, int y1, int x2, int y2 )
 
 void lcd128DrawRect(LCD128 *lcd, int x, int y, int width, int height )
 {
-  lcd128DrawLine( lcd, x, y, width, y );
-  lcd128DrawLine( lcd, width, y, width, height );
-  lcd128DrawLine( lcd, width, height, x, height );
-  lcd128DrawLine( lcd, x, height, x, y );
+  lcd128DrawLine( lcd, x, y, x + width, y );
+  lcd128DrawLine( lcd, x + width, y, x + width, y + height );
+  lcd128DrawLine( lcd, x + width, y + height, x, y + height );
+  lcd128DrawLine( lcd, x, y + height, x, y );
 }
 
 /*
@@ -415,9 +415,9 @@ void lcd128DrawRect(LCD128 *lcd, int x, int y, int width, int height )
 
 void lcd128DrawFilledRect(LCD128 *lcd, int x, int y, int width, int height )
 {
-  for ( int i = x; i <= width; i++ )
+  for ( int i = x; i <= x + width; i++ )
   {
-    lcd128DrawLine( lcd, i, y, i, height );
+    lcd128DrawLine( lcd, i, y, i, y + height );
   }
 }
 
