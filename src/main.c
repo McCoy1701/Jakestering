@@ -26,71 +26,31 @@
 #include <stdlib.h>
 
 #include "jakestering.h"
-#include "lcd.h"
 
-typedef struct _ball
-{
-  int x, y;
-  int velx, vely;
-  int speed;
-} Ball;
-
-Ball* ballInit( int x, int y, int speed );
-
-LCD *lcd;
-
-Ball *ball;
+void function( void );
 
 int main( int argc, char **argv )
 {
   setupIO();
-
-  lcd = initLcd( 4, 20, 0, 13,  3, 4, 5, 6, 7, 8, 9, 10 );
   
-  ball = ballInit( 0, 0, 1);
+  pinMode( 0, INPUT );
 
-  lcdClear( lcd );
+  GPIO_REN |= 1 << 0;
 
-  while (1)
+  while ( 1 )
   {
-
-    ball->x += ball->velx;
-    ball->y += ball->vely;
-    
-    if ( ( ball->x >= ( lcd->cols - 1 ) ) || ( ball->x <= 0 ) )
+    if ( GPIO_EDS( pin ) != 0 )
     {
-      ball->velx = -ball->velx;
+      function();
+      GPIO_SET_EDS |= 1 << pin; //Clear eds after detecting a edge
     }
-    
-    if ( ( ball->y >= ( lcd->rows - 1 ) ) || ( ball->y <= 0 ) )
-    {
-      ball->vely = -ball->vely;
-    }
-    
-    lcdClear( lcd );
-
-    lcdPosition( lcd, ball->x, ball->y );
-    lcdPutChar( lcd, 'o' );
-    printf( "x, y: %d, %d\n", ball->x, ball->y );
-    delay( 1000 );
   }
 
-  free( lcd );
-  free( ball );
-
-  return 0;
+  //interrupt_service_routine( 0, RISING_EDGE, &function );
 }
 
-Ball* ballInit( int x, int y, int speed )
+void function( void )
 {
-  Ball *ball = ( Ball* )malloc( sizeof( Ball ) );
-  
-  ball->x = x;
-  ball->y = y;
-  ball->speed = speed;
-  ball->velx = speed;
-  ball->vely = speed;
-
-  return ball;
+  printf("Rising edge\n");
 }
 
