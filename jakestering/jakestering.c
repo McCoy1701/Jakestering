@@ -28,7 +28,6 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <pthread.h>
 
 #include "jakestering.h"
 
@@ -37,8 +36,6 @@ int memFd;
 void* gpioMap;
 
 volatile unsigned *gpio;
-
-pthread_mutex_t gpioMutex;
 
 /*
  * Sets up the GPIO memory address space to be modified
@@ -247,91 +244,5 @@ void digitalWriteByte( const int value, const int pinStart, const int pinEnd ) /
 
   GPIO_CLR = pinClr;
   GPIO_SET = pinSet;
-}
-
-
-void interrupt_service_routine( const int pin, const int mode, void ( *function )( void ) )
-{
-  /*pthread_t tid;
-
-  if ( pthread_mutex_init( &gpioMutex, NULL ) != 0 )
-  {
-    printf( "Failed to initialize gpio mutex\n" );
-    exit( EXIT_FAILURE );
-  }
-
-  Interrupt_args_t *arg = malloc( sizeof( Interrupt_args_t ) );
-  if ( arg == NULL )
-  {
-    printf( "Failed to allocated memory for arguments\n" );
-    exit( EXIT_FAILURE );
-  }
-  
-  arg->pin = pin;
-  arg->function = function;*/
-  
-  switch ( mode )
-  {
-    case RISING_EDGE:
-      GPIO_REN |= 1 << pin;
-      break;
-    
-    case FALLING_EDGE:
-      GPIO_FEN |= 1 << pin;
-      break;
-    
-    case HIGH_DETECT:
-      GPIO_HEN |= 1 << pin;
-      break;
-    
-    case LOW_DETECT:
-      GPIO_LEN |= 1 << pin;
-      break;
-    
-    case ASYNC_RISING_EDGE:
-      GPIO_AREN |= 1 << pin;
-      break;
-    
-    case ASYNC_FALLING_EDGE:
-      GPIO_AFEN |= 1 << pin;
-      break;
-    
-    default:
-      break;
-  }
-
-  /*pthread_mutex_lock( &gpioMutex );
-
-  if ( pthread_create( &tid, NULL, poll_EDS_register, (void *)arg ) != 0 )
-  {
-    printf( "Failed to create thread\n" );
-    pthread_mutex_unlock( &gpioMutex );
-    free(arg);
-    exit( EXIT_FAILURE );
-  }
-
-  pthread_mutex_unlock( &gpioMutex );
-  pthread_detach( tid ); */
-}
-
-void poll_EDS_register( const int pin, void ( *callback )( void ) )
-{
-  //Interrupt_args_t *argument = ( Interrupt_args_t * )arg;
-  //int pin = argument->pin;
-  //void ( *callback )( void ) = argument->function;
-
-  //pthread_mutex_lock( &gpioMutex );
-  
-  while ( 1 )
-  {
-    if ( GPIO_EDS( pin ) != 0 )
-    {
-      callback();
-      GPIO_SET_EDS |= 1 << pin; //Clear eds after detecting a edge
-    }
-  }
-
-  //pthread_mutex_unlock( &gpioMutex );
-  //return NULL;
 }
 

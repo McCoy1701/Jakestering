@@ -41,7 +41,6 @@
 #define GPIO_LEV( g ) ( *( gpio + 13 ) & ( 1 << g ) )
 
 #define GPIO_EDS  *( gpio + 16 )
-#define GPIO_SET_EDS( g ) ( *( gpio + 13 ) & ( 1 << g ) )
 #define GPIO_REN  *( gpio + 19 )
 #define GPIO_FEN  *( gpio + 22 )
 #define GPIO_HEN  *( gpio + 25 )
@@ -64,10 +63,11 @@
 
 #define RISING_EDGE        0
 #define FALLING_EDGE       1
-#define HIGH_DETECT        2
-#define LOW_DETECT         3
-#define ASYNC_RISING_EDGE  4
-#define ASYNC_FALLING_EDGE 5
+#define BOTH_EDGE          2
+#define HIGH_DETECT        3
+#define LOW_DETECT         4
+#define ASYNC_RISING_EDGE  5
+#define ASYNC_FALLING_EDGE 6
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
@@ -93,10 +93,6 @@ void digitalWrite( const int pin, const int value );
 int digitalRead( const int pin );
 
 void digitalWriteByte( const int value, const int pinStart, const int pinEnd );
-
-void interrupt_service_routine( const int pin, const int mode, void ( *function )( void ) );
-
-void poll_EDS_register( const int pin, void ( *callback )( void ) );
 
 #endif
 
